@@ -417,13 +417,214 @@ async def vendor_complete_order(order_id: str, proof_url: Optional[str] = None, 
     
     await db.orders.update_one({"id": order_id}, update_data)
     
+    # Update vendor sales and earnings
+    vendor_id = current_user['sub']
+    vendor_share = order['total'] * 0.9  # Assume 90% goes to vendor
+    
+    await db.vendors.update_one(
+        {"id": vendor_id},
+        {
+            "$inc": {
+                "total_sales": 1,
+                "total_earnings": vendor_share,
+                "current_workload_count": -1
+            }
+        }
+    )
+    
+    # Check for badge upgrade
+    from badge_system import should_upgrade_badge
+    vendor = await db.vendors.find_one({"id": vendor_id})
+    upgraded, new_badge = should_upgrade_badge(vendor.get('badge', 'none'), vendor.get('total_sales', 0) + 1)
+    
+    if upgraded:
+        await db.vendors.update_one(
+            {"id": vendor_id},
+            {"$set": {"badge": new_badge}}
+        )
+        
+        # Notify vendor of badge upgrade
+        await notify_vendor(
+            vendor_id,
+            "badge.upgrade",
+            {
+                "newBadge": new_badge,
+                "message": f"Congratulations! You've been upgraded to {new_badge.upper()} badge!"
+            }
+        )
+    
     await notification_service.send_whatsapp(
         order['customer_phone'],
         f"Your order {order_id} is ready!",
         order_id
     )
     
-    return {"message": "Order completed", "status": "success"}
+    return {"message": "Order completed", "status": "success", "badgeUpgraded": upgraded, "newBadge": new_badge if upgraded else vendor.get('badge')}
+
+@api_router.put("/vendor/orders/{order_id}/action")
+async def vendor_order_action(
+    order_id: str,
+    action: str = Form(...),
+    note: Optional[str] = Form(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Vendor accepts or declines order"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    vendor_id = current_user['sub']
+    order = await db.orders.find_one({"id": order_id})
+    
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if order.get('assigned_vendor_id') != vendor_id:
+        raise HTTPException(status_code=403, detail="Order not assigned to you")
+    
+    if action == "accept":
+        # Accept order
+        vendor = await db.vendors.find_one({"id": vendor_id}, {"_id": 0})
+        
+        status_update = {
+            "status": "Assigned",
+            "by": vendor_id,
+            "note": note or "Vendor accepted order",
+            "at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.orders.update_one(
+            {"id": order_id},
+            {
+                "$set": {
+                    "status": OrderStatus.ASSIGNED.value,
+                    "vendor_acceptance.status": "accepted",
+                    "vendor_acceptance.accepted_at": datetime.now(timezone.utc).isoformat(),
+                    "vendor_acceptance.accepted_by_vendor_id": vendor_id,
+                    "assigned_vendor_snapshot": {
+                        "vendorId": vendor['id'],
+                        "shopName": vendor.get('shop_name', vendor['name']),
+                        "address": vendor.get('address', vendor['location']['address']),
+                        "contact": vendor['contact_phone'],
+                        "location": vendor['location']
+                    },
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                },
+                "$push": {"statusHistory": status_update}
+            }
+        )
+        
+        # Notify customer
+        await notification_service.send_whatsapp(
+            order['customer_phone'],
+            f"Your order {order_id} has been accepted by {vendor.get('shop_name', vendor['name'])}!",
+            order_id
+        )
+        
+        return {"message": "Order accepted successfully", "status": "success"}
+        
+    elif action == "decline":
+        # Decline order
+        status_update = {
+            "status": "Declined",
+            "by": vendor_id,
+            "note": note or "Vendor declined order",
+            "at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.orders.update_one(
+            {"id": order_id},
+            {
+                "$set": {
+                    "vendor_acceptance.status": "declined",
+                    "vendor_acceptance.declined_at": datetime.now(timezone.utc).isoformat()
+                },
+                "$inc": {"vendor_acceptance.reassignment_attempts": 1},
+                "$push": {"statusHistory": status_update}
+            }
+        )
+        
+        # Decrement workload
+        await db.vendors.update_one(
+            {"id": vendor_id},
+            {"$inc": {"current_workload_count": -1}}
+        )
+        
+        # Try reassignment
+        from order_assignment import reassign_order
+        await reassign_order(order_id, db, notify_vendor)
+        
+        return {"message": "Order declined, reassigning to next vendor", "status": "success"}
+    
+    else:
+        raise HTTPException(status_code=400, detail="Invalid action")
+
+@api_router.put("/vendor/store")
+async def toggle_vendor_store(store_open: bool = Form(...), current_user: dict = Depends(get_current_user)):
+    """Toggle vendor store open/closed"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    vendor_id = current_user['sub']
+    
+    await db.vendors.update_one(
+        {"id": vendor_id},
+        {
+            "$set": {
+                "store_open": store_open,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Log audit
+    await db.vendor_audits.insert_one({
+        "vendor_id": vendor_id,
+        "action": "store_toggle",
+        "value": store_open,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
+    
+    status_text = "open" if store_open else "closed"
+    return {"message": f"Store marked as {status_text}", "store_open": store_open}
+
+@api_router.get("/vendor/profile")
+async def get_vendor_profile(current_user: dict = Depends(get_current_user)):
+    """Get vendor profile"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    vendor = await db.vendors.find_one({"id": current_user['sub']}, {"_id": 0, "password_hash": 0})
+    if not vendor:
+        raise HTTPException(status_code=404, detail="Vendor not found")
+    
+    return vendor
+
+@api_router.put("/vendor/profile")
+async def update_vendor_profile(
+    name: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
+    working_hours: Optional[str] = Form(None),
+    profile_image_url: Optional[str] = Form(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Update vendor profile"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    updates = {}
+    if name: updates['name'] = name
+    if description: updates['description'] = description
+    if working_hours: updates['working_hours'] = working_hours
+    if profile_image_url: updates['profile_image_url'] = profile_image_url
+    
+    if updates:
+        updates['updated_at'] = datetime.now(timezone.utc).isoformat()
+        await db.vendors.update_one(
+            {"id": current_user['sub']},
+            {"$set": updates}
+        )
+    
+    return {"message": "Profile updated successfully"}
 
 # ==================== ADMIN PRICING MANAGER ====================
 
