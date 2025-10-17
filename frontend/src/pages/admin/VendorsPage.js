@@ -106,7 +106,7 @@ const VendorsPage = () => {
 
   const confirmDelete = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('admin_token');
       await axios.delete(`${API}/admin/vendors/${selectedVendor.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -122,7 +122,7 @@ const VendorsPage = () => {
 
   const saveVendorEdit = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('admin_token');
       await axios.put(`${API}/admin/vendors/${selectedVendor.id}`, editForm, {
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@ const VendorsPage = () => {
 
   const saveBadgeConfig = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('admin_token');
       await axios.post(`${API}/admin/badges/config`, editingBadgeConfig, {
         headers: { 
           Authorization: `Bearer ${token}`,
