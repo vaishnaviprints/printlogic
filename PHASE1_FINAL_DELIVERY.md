@@ -1,7 +1,7 @@
 # ✅ Phase 1 Final Delivery - Vaishnavi Printers
 
 **Status:** DEPLOYED & VERIFIED  
-**Preview URL:** https://printlogic-app.preview.emergentagent.com  
+**Preview URL:** https://printshop-flow.preview.emergentagent.com  
 **Date:** January 17, 2025
 
 ---
@@ -16,18 +16,18 @@
 ## 🔐 Test Credentials
 
 ### Admin Portal
-- **URL:** https://printlogic-app.preview.emergentagent.com/admin/login
+- **URL:** https://printshop-flow.preview.emergentagent.com/admin/login
 - **Email:** admin@vaishnavi.com
 - **Password:** admin123
 
 ### Customer Portal
-- **URL:** https://printlogic-app.preview.emergentagent.com/login
+- **URL:** https://printshop-flow.preview.emergentagent.com/login
 - **Email:** customer@test.com
 - **Password:** customer123
 - **Mobile (OTP):** +919876543210
 
 ### Vendor Portal
-- **URL:** https://printlogic-app.preview.emergentagent.com/vendor/login
+- **URL:** https://printshop-flow.preview.emergentagent.com/vendor/login
 - **Central Store:**
   - Email: central@vaishnavi.com
   - Password: vendor123
@@ -80,16 +80,16 @@
 **Test via API:**
 ```bash
 # Login as admin
-curl -X POST "https://printlogic-app.preview.emergentagent.com/api/auth/login" \
+curl -X POST "https://printshop-flow.preview.emergentagent.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@vaishnavi.com","password":"admin123"}'
 
 # Get paper types
-curl "https://printlogic-app.preview.emergentagent.com/api/admin/price-rules/paper-types" \
+curl "https://printshop-flow.preview.emergentagent.com/api/admin/price-rules/paper-types" \
   -H "Authorization: Bearer {TOKEN}"
 
 # Update paper type (creates audit)
-curl -X PUT "https://printlogic-app.preview.emergentagent.com/api/admin/price-rules/paper-types/a4_70gsm" \
+curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/admin/price-rules/paper-types/a4_70gsm" \
   -H "Authorization: Bearer {TOKEN}" \
   -F "perPage_bw=0.60" \
   -F "reason=Price increase for 2025"
@@ -150,7 +150,7 @@ curl -X PUT "https://printlogic-app.preview.emergentagent.com/api/admin/price-ru
 ### Complete Customer → Vendor Flow:
 
 1. **Customer Registers:**
-   - Go to https://printlogic-app.preview.emergentagent.com/register
+   - Go to https://printshop-flow.preview.emergentagent.com/register
    - Fill form and submit
    - Auto-logged in
 
@@ -273,7 +273,7 @@ curl -X PUT "https://printlogic-app.preview.emergentagent.com/api/admin/price-ru
 import { io } from 'socket.io-client';
 
 const vendorId = localStorage.getItem('vendor_id');
-const socket = io('https://printlogic-app.preview.emergentagent.com', {
+const socket = io('https://printshop-flow.preview.emergentagent.com', {
   path: '/socket.io',
   auth: { vendor_id: vendorId },
   transports: ['websocket', 'polling']
@@ -339,4 +339,4 @@ function markAsRead() {
 
 All core business logic implemented and tested. Backend APIs fully functional. Real-time notifications working. Ready for your verification and feedback for Phase 2 planning.
 
-**Preview is live and stable:** https://printlogic-app.preview.emergentagent.com
+**Preview is live and stable:** https://printshop-flow.preview.emergentagent.com

@@ -9,7 +9,7 @@ Run through these tests manually to verify all business logic is working correct
 **Objective**: Verify basic B&W printing price calculation
 
 ### Steps:
-1. Go to https://printlogic-app.preview.emergentagent.com/print
+1. Go to https://printshop-flow.preview.emergentagent.com/print
 2. Fill customer details:
    - Name: Test Customer
    - Email: test@example.com
@@ -172,7 +172,7 @@ Run through these tests manually to verify all business logic is working correct
 **Objective**: Verify admin authentication and dashboard access
 
 ### Steps:
-1. Go to https://printlogic-app.preview.emergentagent.com/admin/login
+1. Go to https://printshop-flow.preview.emergentagent.com/admin/login
 2. Enter credentials:
    - Email: admin@vaishnavi.com
    - Password: admin123

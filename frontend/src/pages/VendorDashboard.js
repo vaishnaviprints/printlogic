@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Bell, Package, PlayCircle, CheckCircle, LogOut, Loader2 } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const SOCKET_URL = process.env.REACT_APP_BACKEND_URL || 'https://printlogic-app.preview.emergentagent.com';
+const SOCKET_URL = process.env.REACT_APP_BACKEND_URL || 'https://printshop-flow.preview.emergentagent.com';
 
 const VendorDashboard = () => {
   const [orders, setOrders] = useState([]);

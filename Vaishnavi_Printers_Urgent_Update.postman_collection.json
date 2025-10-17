@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "https://printlogic-app.preview.emergentagent.com/api"
+      "value": "https://printshop-flow.preview.emergentagent.com/api"
     },
     {
       "key": "admin_token",
