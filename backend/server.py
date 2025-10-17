@@ -830,9 +830,9 @@ async def calculate_order_estimate(request: EstimateRequest):
 
 @api_router.post("/orders", response_model=Order)
 async def create_order(order_data: OrderCreate):
-    """Create new order"""
+    """Create new order with snapshot and vendor assignment"""
     try:
-        # Calculate estimate to get pricing snapshot
+        # Calculate estimate
         estimate_request = EstimateRequest(
             items=order_data.items,
             fulfillment_type=order_data.fulfillment_type,
@@ -843,7 +843,27 @@ async def create_order(order_data: OrderCreate):
         # Get active price rule for snapshot
         price_rule = get_active_price_rule()
         
-        # Create order
+        # Auto-assign vendor for pickup
+        assigned_vendor_id = None
+        assigned_vendor_snapshot = None
+        
+        if order_data.fulfillment_type.value == "Pickup" and order_data.customer_location:
+            vendors = await db.vendors.find({"is_active": True}, {"_id": 0}).to_list(10)
+            vendor_objs = [Vendor(**v) for v in vendors]
+            assignment = await auto_assign_vendor(order_data.customer_location, vendor_objs)
+            
+            if assignment['status'] == 'auto_assigned':
+                assigned_vendor_id = assignment['vendor'].id
+                assigned_vendor_snapshot = assignment['vendor'].model_dump()
+        
+        # Create order with statusHistory
+        initial_status = {
+            "status": OrderStatus.ESTIMATED.value,
+            "by": "system",
+            "note": "Order created",
+            "at": datetime.now(timezone.utc).isoformat()
+        }
+        
         order = Order(
             customer_email=order_data.customer_email,
             customer_phone=order_data.customer_phone,
@@ -855,14 +875,30 @@ async def create_order(order_data: OrderCreate):
             delivery_charge=estimate.delivery_charge,
             total=estimate.total,
             status=OrderStatus.ESTIMATED,
-            appliedPricingSnapshot=price_rule.model_dump()
+            appliedPricingSnapshot=price_rule.model_dump(),
+            assigned_vendor_id=assigned_vendor_id,
+            assigned_vendor_snapshot=assigned_vendor_snapshot
         )
         
         order_dict = order.model_dump()
         order_dict['created_at'] = order_dict['created_at'].isoformat()
         order_dict['updated_at'] = order_dict['updated_at'].isoformat()
+        order_dict['statusHistory'] = [initial_status]
         
         await db.orders.insert_one(order_dict)
+        
+        # Notify vendor if assigned
+        if assigned_vendor_id:
+            await notify_vendor(
+                assigned_vendor_id,
+                "order.new",
+                {
+                    "orderId": order.id,
+                    "summary": f"{len(order.items)} file(s) - {sum(item.num_pages for item in order.items)} pages",
+                    "total": f"\u20b9{order.total:.2f}",
+                    "createdAt": order_dict['created_at']
+                }
+            )
         
         return order
     except Exception as e:
