@@ -533,6 +533,185 @@ const VendorsPage = () => {
         </TabsContent>
       </Tabs>
 
+
+      {/* Create Vendor Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Vendor</DialogTitle>
+            <DialogDescription>Add a new vendor to the platform</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label>Vendor Name *</Label>
+                <Input
+                  value={createForm.name}
+                  onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                  placeholder="Enter vendor legal name"
+                />
+              </div>
+              <div>
+                <Label>Shop Name *</Label>
+                <Input
+                  value={createForm.shop_name}
+                  onChange={(e) => setCreateForm({ ...createForm, shop_name: e.target.value })}
+                  placeholder="Enter shop display name"
+                />
+              </div>
+              <div>
+                <Label>Email *</Label>
+                <Input
+                  type="email"
+                  value={createForm.contact_email}
+                  onChange={(e) => setCreateForm({ ...createForm, contact_email: e.target.value })}
+                  placeholder="vendor@example.com"
+                />
+              </div>
+              <div>
+                <Label>Phone *</Label>
+                <Input
+                  value={createForm.contact_phone}
+                  onChange={(e) => setCreateForm({ ...createForm, contact_phone: e.target.value })}
+                  placeholder="+91XXXXXXXXXX"
+                />
+              </div>
+              <div>
+                <Label>Password *</Label>
+                <Input
+                  type="password"
+                  value={createForm.password}
+                  onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
+                  placeholder="Enter secure password"
+                />
+              </div>
+              <div>
+                <Label>Working Hours</Label>
+                <Input
+                  value={createForm.working_hours}
+                  onChange={(e) => setCreateForm({ ...createForm, working_hours: e.target.value })}
+                  placeholder="9 AM - 6 PM"
+                />
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <Label>City *</Label>
+                <Input
+                  value={createForm.location.city}
+                  onChange={(e) => setCreateForm({ 
+                    ...createForm, 
+                    location: { ...createForm.location, city: e.target.value }
+                  })}
+                  placeholder="Bangalore"
+                />
+              </div>
+              <div>
+                <Label>Pincode *</Label>
+                <Input
+                  value={createForm.location.pincode}
+                  onChange={(e) => setCreateForm({ 
+                    ...createForm, 
+                    location: { ...createForm.location, pincode: e.target.value }
+                  })}
+                  placeholder="560001"
+                />
+              </div>
+              <div>
+                <Label>Auto Accept Radius (km)</Label>
+                <Input
+                  type="number"
+                  step="0.5"
+                  value={createForm.autoAcceptRadiusKm}
+                  onChange={(e) => setCreateForm({ ...createForm, autoAcceptRadiusKm: parseFloat(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label>Address *</Label>
+              <Input
+                value={createForm.location.address}
+                onChange={(e) => setCreateForm({ 
+                  ...createForm, 
+                  location: { ...createForm.location, address: e.target.value }
+                })}
+                placeholder="Street address"
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <Label>Latitude (optional)</Label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={createForm.location.latitude}
+                  onChange={(e) => setCreateForm({ 
+                    ...createForm, 
+                    location: { ...createForm.location, latitude: e.target.value }
+                  })}
+                  placeholder="12.9716"
+                />
+              </div>
+              <div>
+                <Label>Longitude (optional)</Label>
+                <Input
+                  type="number"
+                  step="any"
+                  value={createForm.location.longitude}
+                  onChange={(e) => setCreateForm({ 
+                    ...createForm, 
+                    location: { ...createForm.location, longitude: e.target.value }
+                  })}
+                  placeholder="77.5946"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label>Description</Label>
+              <Textarea
+                value={createForm.description}
+                onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
+                rows={3}
+                placeholder="Enter vendor description"
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between">
+                <Label>Certified Vendor</Label>
+                <Switch
+                  checked={createForm.certified}
+                  onCheckedChange={(checked) => setCreateForm({ ...createForm, certified: checked })}
+                />
+              </div>
+              <div>
+                <Label>Initial Badge</Label>
+                <select
+                  className="w-full h-10 px-3 rounded-md border border-gray-300"
+                  value={createForm.badge}
+                  onChange={(e) => setCreateForm({ ...createForm, badge: e.target.value })}
+                >
+                  <option value="none">None</option>
+                  <option value="bronze">Bronze</option>
+                  <option value="silver">Silver</option>
+                  <option value="gold">Gold</option>
+                  <option value="diamond">Diamond</option>
+                  <option value="platinum">Platinum</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreateVendor}>Create Vendor</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* View Vendor Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
