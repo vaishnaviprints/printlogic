@@ -157,9 +157,13 @@ class Vendor(BaseModel):
 
 class VendorCreate(BaseModel):
     name: str
+    shop_name: str
     location: VendorLocation
     contact_phone: str
     contact_email: str
+    password: str
+    address: str = ""
+    description: str = ""
     autoAcceptRadiusKm: float = 5.0
 
 # Order Models
