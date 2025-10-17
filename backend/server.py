@@ -673,7 +673,7 @@ async def update_vendor(
     vendor_doc.update(updates)
     return Vendor(**vendor_doc)
 
-# ==================== UPLOAD ENDPOINTS ====================
+# ==================== FILE UPLOAD ENDPOINTS ====================
 
 @api_router.post("/upload/init", response_model=UploadInitResponse)
 async def init_upload(request: UploadInitRequest):
@@ -684,6 +684,18 @@ async def init_upload(request: UploadInitRequest):
             request.file_type
         )
         
+        # Store file record
+        file_record = {
+            "id": upload_data['upload_id'],
+            "file_name": request.file_name,
+            "file_type": request.file_type,
+            "file_size": request.file_size,
+            "file_key": upload_data['file_key'],
+            "status": "pending_upload",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.files.insert_one(file_record)
+        
         return UploadInitResponse(
             upload_id=upload_data['upload_id'],
             signed_url=upload_data['signed_url'],
@@ -692,6 +704,56 @@ async def init_upload(request: UploadInitRequest):
     except Exception as e:
         logger.error(f"Upload init error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/upload/complete/{upload_id}")
+async def complete_upload(upload_id: str):
+    """Mark upload as complete and trigger conversion"""
+    try:
+        file_record = await db.files.find_one({"id": upload_id})
+        if not file_record:
+            raise HTTPException(status_code=404, detail="Upload not found")
+        
+        # Update status
+        await db.files.update_one(
+            {"id": upload_id},
+            {"$set": {
+                "status": "uploaded",
+                "uploaded_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        # Simulate conversion (in production, trigger actual conversion job)
+        import random
+        simulated_pages = random.randint(5, 50)
+        
+        await db.files.update_one(
+            {"id": upload_id},
+            {"$set": {
+                "status": "converted",
+                "pages": simulated_pages,
+                "pdf_url": f"simulated://pdf/{upload_id}.pdf",
+                "thumbnails": [f"simulated://thumb/{upload_id}_1.jpg"],
+                "converted_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        return {
+            "message": "Upload complete, conversion finished",
+            "upload_id": upload_id,
+            "pages": simulated_pages
+        }
+    except Exception as e:
+        logger.error(f"Upload complete error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/files/{file_id}/status")
+async def get_file_status(file_id: str):
+    """Get file upload and conversion status"""
+    file_record = await db.files.find_one({"id": file_id}, {"_id": 0})
+    if not file_record:
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    return file_record
 
 @api_router.post("/upload/verify/{upload_id}")
 async def verify_upload(upload_id: str, file_key: str):
