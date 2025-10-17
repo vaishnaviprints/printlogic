@@ -106,6 +106,8 @@ const AdminDashboard = () => {
           <Route path="orders" element={<OrdersPage />} />
           <Route path="pricing" element={<PricingPage />} />
           <Route path="vendors" element={<VendorsPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="audits" element={<AuditLogsPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<OrdersPage />} />
         </Routes>
