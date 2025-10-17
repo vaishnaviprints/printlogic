@@ -415,6 +415,15 @@ const VendorsPage = () => {
                       </div>
                     </div>
 
+                    {/* Badge Progress */}
+                    <div className="pt-3 border-t">
+                      <BadgeProgressBar
+                        currentBadge={vendor.badge}
+                        totalSales={vendor.total_sales || 0}
+                        badgeConfig={badgeConfig}
+                      />
+                    </div>
+
                     {/* Actions */}
                     <div className="flex gap-2 pt-3 border-t">
                       <Button
