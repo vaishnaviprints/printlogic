@@ -626,6 +626,69 @@ async def update_vendor_profile(
     
     return {"message": "Profile updated successfully"}
 
+# ==================== ADMIN VENDOR MANAGEMENT ====================
+
+@api_router.get("/admin/vendors/list")
+async def admin_list_vendors(current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN, UserRole.SUPERVISOR]))):
+    """Get all vendors for admin"""
+    vendors = await db.vendors.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
+    return vendors
+
+@api_router.put("/admin/vendors/{vendor_id}")
+async def admin_update_vendor(
+    vendor_id: str,
+    updates: Dict[str, Any],
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Admin updates vendor details"""
+    # Don't allow changing password_hash directly
+    if 'password_hash' in updates:
+        del updates['password_hash']
+    
+    updates['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.vendors.update_one(
+        {"id": vendor_id},
+        {"$set": updates}
+    )
+    
+    # Log audit
+    await db.vendor_audits.insert_one({
+        "vendor_id": vendor_id,
+        "action": "admin_edit",
+        "changed_by": current_user['email'],
+        "changes": updates,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"message": "Vendor updated successfully"}
+
+@api_router.post("/admin/badges/config")
+async def admin_configure_badges(
+    thresholds: Dict[str, Any],
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Configure badge thresholds"""
+    from badge_system import save_badge_thresholds
+    
+    save_badge_thresholds(thresholds)
+    
+    # Log audit
+    await db.system_audits.insert_one({
+        "action": "badge_config_update",
+        "changed_by": current_user['email'],
+        "config": thresholds,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"message": "Badge configuration updated", "thresholds": thresholds}
+
+@api_router.get("/admin/badges/config")
+async def admin_get_badge_config(current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN, UserRole.SUPERVISOR]))):
+    """Get badge configuration"""
+    from badge_system import load_badge_thresholds
+    return load_badge_thresholds()
+
 # ==================== ADMIN PRICING MANAGER ====================
 
 @api_router.get("/admin/price-rules/paper-types")
