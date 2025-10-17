@@ -1,0 +1,52 @@
+{
+  "partners": [
+    {
+      "id": "uber_direct",
+      "name": "Uber Direct",
+      "enabled": true,
+      "mode": "SIMULATED",
+      "baseRate": 40.00,
+      "perKmRate": 8.00,
+      "minCharge": 40.00,
+      "maxDistanceKm": 25,
+      "estimatedTimeMinutes": 45,
+      "priority": 1
+    },
+    {
+      "id": "rapido",
+      "name": "Rapido",
+      "enabled": true,
+      "mode": "SIMULATED",
+      "baseRate": 30.00,
+      "perKmRate": 10.00,
+      "minCharge": 35.00,
+      "maxDistanceKm": 20,
+      "estimatedTimeMinutes": 30,
+      "priority": 2
+    },
+    {
+      "id": "swiggy_genie",
+      "name": "Swiggy Genie",
+      "enabled": true,
+      "mode": "SIMULATED",
+      "baseRate": 35.00,
+      "perKmRate": 9.00,
+      "minCharge": 40.00,
+      "maxDistanceKm": 30,
+      "estimatedTimeMinutes": 50,
+      "priority": 3
+    },
+    {
+      "id": "dunzo",
+      "name": "Dunzo",
+      "enabled": true,
+      "mode": "SIMULATED",
+      "baseRate": 45.00,
+      "perKmRate": 7.00,
+      "minCharge": 45.00,
+      "maxDistanceKm": 15,
+      "estimatedTimeMinutes": 40,
+      "priority": 4
+    }
+  ]
+}

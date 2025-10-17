@@ -1,0 +1,48 @@
+{
+  "rules": [
+    {
+      "id": "rule_001",
+      "name": "Standard Pricing 2025",
+      "active": true,
+      "effectiveFrom": "2025-01-01T00:00:00Z",
+      "effectiveTo": null,
+      "paperTypes": [
+        {
+          "id": "a4_70gsm",
+          "name": "A4 70 GSM",
+          "perPage_bw": 0.50,
+          "perPage_color": 3.00
+        },
+        {
+          "id": "a4_80gsm",
+          "name": "A4 80 GSM",
+          "perPage_bw": 0.75,
+          "perPage_color": 4.00
+        },
+        {
+          "id": "a3_70gsm",
+          "name": "A3 70 GSM",
+          "perPage_bw": 1.50,
+          "perPage_color": 8.00
+        }
+      ],
+      "lamination": {
+        "perSheet": 10.00
+      },
+      "binding": {
+        "spiral": 25.00,
+        "hardcover": 75.00,
+        "none": 0.00
+      },
+      "deliveryCharge": {
+        "baseRate": 50.00,
+        "perKmRate": 10.00,
+        "freeAbove": 500.00
+      },
+      "fallbackMultipliers": {
+        "urgentMultiplier": 1.5,
+        "weekendMultiplier": 1.2
+      }
+    }
+  ]
+}

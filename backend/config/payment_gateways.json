@@ -1,0 +1,36 @@
+{
+  "gateways": [
+    {
+      "id": "razorpay",
+      "name": "Razorpay",
+      "enabled": false,
+      "sandboxKeyId": "",
+      "sandboxKeySecret": "",
+      "prodKeyId": "",
+      "prodKeySecret": "",
+      "webhookSecret": ""
+    },
+    {
+      "id": "payu",
+      "name": "PayU",
+      "enabled": false,
+      "sandboxMerchantKey": "",
+      "sandboxMerchantSalt": "",
+      "prodMerchantKey": "",
+      "prodMerchantSalt": "",
+      "webhookSecret": ""
+    },
+    {
+      "id": "paytm",
+      "name": "PayTM",
+      "enabled": false,
+      "sandboxMerchantId": "",
+      "sandboxMerchantKey": "",
+      "prodMerchantId": "",
+      "prodMerchantKey": "",
+      "webhookSecret": ""
+    }
+  ],
+  "activeGateway": "razorpay",
+  "mode": "SIMULATED"
+}
