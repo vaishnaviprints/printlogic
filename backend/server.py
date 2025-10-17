@@ -148,6 +148,235 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     """Get current user info"""
     return current_user
 
+# ==================== CUSTOMER AUTH ENDPOINTS ====================
+
+@api_router.post("/auth/customer/register")
+async def customer_register(email: str = Form(...), password: str = Form(...), name: str = Form(...), mobile: str = Form(...)):
+    """Register new customer"""
+    existing = await db.customers.find_one({"$or": [{"email": email}, {"mobile": mobile}]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email or mobile already registered")
+    
+    customer = {
+        "id": f"cust_{uuid.uuid4().hex[:12]}",
+        "email": email,
+        "password_hash": pwd_context.hash(password),
+        "name": name,
+        "mobile": mobile,
+        "email_verified": False,
+        "mobile_verified": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.customers.insert_one(customer)
+    token = create_customer_token(customer['id'], email, mobile)
+    
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {"id": customer['id'], "email": email, "name": name, "mobile": mobile, "type": "customer"}
+    }
+
+@api_router.post("/auth/customer/login")
+async def customer_login(email: str = Form(...), password: str = Form(...)):
+    """Login customer"""
+    customer = await db.customers.find_one({"email": email})
+    if not customer or not pwd_context.verify(password, customer['password_hash']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    token = create_customer_token(customer['id'], customer['email'], customer['mobile'])
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {"id": customer['id'], "email": customer['email'], "name": customer['name'], "mobile": customer['mobile'], "type": "customer"}
+    }
+
+@api_router.post("/auth/customer/request-otp")
+async def request_otp(mobile: str = Form(...)):
+    """Send OTP to mobile"""
+    customer = await db.customers.find_one({"mobile": mobile})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Mobile not registered")
+    
+    otp = generate_otp()
+    store_otp(mobile, otp)
+    send_otp_sms(mobile, otp)
+    
+    return {"message": "OTP sent successfully", "mobile": mobile, "otp_debug": otp}
+
+@api_router.post("/auth/customer/verify-otp")
+async def verify_otp_login(mobile: str = Form(...), otp: str = Form(...)):
+    """Verify OTP and login"""
+    if not verify_otp(mobile, otp):
+        raise HTTPException(status_code=401, detail="Invalid or expired OTP")
+    
+    customer = await db.customers.find_one({"mobile": mobile})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    await db.customers.update_one(
+        {"id": customer['id']},
+        {"$set": {"mobile_verified": True}}
+    )
+    
+    token = create_customer_token(customer['id'], customer['email'], mobile)
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {"id": customer['id'], "email": customer['email'], "name": customer['name'], "mobile": mobile, "type": "customer"}
+    }
+
+# ==================== CUSTOMER MY ORDERS ====================
+
+@api_router.get("/customer/orders")
+async def get_customer_orders(current_user: dict = Depends(get_current_user)):
+    """Get customer orders"""
+    if current_user.get('type') != 'customer':
+        raise HTTPException(status_code=403, detail="Not a customer account")
+    
+    customer = await db.customers.find_one({"id": current_user['sub']})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    orders = await db.orders.find(
+        {"customer_email": customer['email']},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    for order in orders:
+        if isinstance(order.get('created_at'), str):
+            order['created_at'] = datetime.fromisoformat(order['created_at'])
+        if isinstance(order.get('updated_at'), str):
+            order['updated_at'] = datetime.fromisoformat(order['updated_at'])
+    
+    return orders
+
+# ==================== VENDOR AUTH & DASHBOARD ====================
+
+@api_router.post("/auth/vendor/login")
+async def vendor_login(email: str = Form(...), password: str = Form(...)):
+    """Vendor login"""
+    vendor = await db.vendors.find_one({"contact_email": email})
+    if not vendor or 'password_hash' not in vendor:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    if not verify_vendor_password(password, vendor['password_hash']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    token = create_vendor_token(vendor['id'], vendor['contact_email'], vendor['name'])
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {"id": vendor['id'], "name": vendor['name'], "email": vendor['contact_email'], "type": "vendor"}
+    }
+
+@api_router.get("/vendor/orders")
+async def get_vendor_orders(current_user: dict = Depends(get_current_user)):
+    """Get vendor orders"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    orders = await db.orders.find(
+        {"assigned_vendor_id": current_user['sub']},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    for order in orders:
+        if isinstance(order.get('created_at'), str):
+            order['created_at'] = datetime.fromisoformat(order['created_at'])
+        if isinstance(order.get('updated_at'), str):
+            order['updated_at'] = datetime.fromisoformat(order['updated_at'])
+    
+    return orders
+
+@api_router.patch("/vendor/orders/{order_id}/accept")
+async def vendor_accept_order(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Vendor accepts order"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    order = await db.orders.find_one({"id": order_id})
+    if not order or order.get('assigned_vendor_id') != current_user['sub']:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    status_update = {
+        "status": "Assigned",
+        "by": current_user['sub'],
+        "note": "Vendor accepted order",
+        "at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.orders.update_one(
+        {"id": order_id},
+        {
+            "$set": {"status": OrderStatus.ASSIGNED.value, "updated_at": datetime.now(timezone.utc).isoformat()},
+            "$push": {"statusHistory": status_update}
+        }
+    )
+    
+    return {"message": "Order accepted", "status": "success"}
+
+@api_router.patch("/vendor/orders/{order_id}/start")
+async def vendor_start_order(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Vendor starts production"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    status_update = {
+        "status": "InProduction",
+        "by": current_user['sub'],
+        "note": "Production started",
+        "at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.orders.update_one(
+        {"id": order_id},
+        {
+            "$set": {"status": OrderStatus.IN_PRODUCTION.value, "updated_at": datetime.now(timezone.utc).isoformat()},
+            "$push": {"statusHistory": status_update}
+        }
+    )
+    
+    return {"message": "Production started", "status": "success"}
+
+@api_router.patch("/vendor/orders/{order_id}/complete")
+async def vendor_complete_order(order_id: str, proof_url: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Vendor marks order complete"""
+    if current_user.get('type') != 'vendor':
+        raise HTTPException(status_code=403, detail="Not a vendor account")
+    
+    order = await db.orders.find_one({"id": order_id})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    new_status = OrderStatus.READY_FOR_PICKUP.value if order['fulfillment_type'] == 'Pickup' else OrderStatus.READY_FOR_DELIVERY.value
+    
+    status_update = {
+        "status": new_status,
+        "by": current_user['sub'],
+        "note": "Order completed and ready",
+        "at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    update_data = {
+        "$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()},
+        "$push": {"statusHistory": status_update}
+    }
+    
+    if proof_url:
+        update_data["$set"]["proof_url"] = proof_url
+    
+    await db.orders.update_one({"id": order_id}, update_data)
+    
+    await notification_service.send_whatsapp(
+        order['customer_phone'],
+        f"Your order {order_id} is ready!",
+        order_id
+    )
+    
+    return {"message": "Order completed", "status": "success"}
+
 # ==================== PRICE RULES ENDPOINTS ====================
 
 @api_router.get("/price-rules", response_model=List[PriceRule])
