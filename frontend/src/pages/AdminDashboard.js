@@ -3,13 +3,15 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Printer, LogOut, Settings, Package, DollarSign, MapPin } from 'lucide-react';
+import { Printer, LogOut, Settings, Package, DollarSign, MapPin, BarChart3, FileText } from 'lucide-react';
 
 // Admin sub-pages
 import OrdersPage from './admin/OrdersPage';
 import PricingPage from './admin/PricingPage';
 import VendorsPage from './admin/VendorsPage';
 import SettingsPage from './admin/SettingsPage';
+import ReportsPage from './admin/ReportsPage';
+import AuditLogsPage from './admin/AuditLogsPage';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
