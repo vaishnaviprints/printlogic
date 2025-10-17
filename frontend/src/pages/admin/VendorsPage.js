@@ -108,6 +108,52 @@ const VendorsPage = () => {
     }
   };
 
+  const handleCreateVendor = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      
+      // Prepare vendor data
+      const vendorData = {
+        ...createForm,
+        location: {
+          ...createForm.location,
+          latitude: parseFloat(createForm.location.latitude) || 0,
+          longitude: parseFloat(createForm.location.longitude) || 0
+        }
+      };
+
+      await axios.post(`${API}/vendor/register`, vendorData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      toast.success('Vendor created successfully');
+      fetchVendors();
+      setCreateDialogOpen(false);
+      
+      // Reset form
+      setCreateForm({
+        name: '',
+        shop_name: '',
+        contact_email: '',
+        contact_phone: '',
+        password: '',
+        location: { address: '', city: '', pincode: '', latitude: 0, longitude: 0 },
+        address: '',
+        description: '',
+        autoAcceptRadiusKm: 5,
+        certified: false,
+        badge: 'none',
+        working_hours: '9 AM - 6 PM'
+      });
+    } catch (error) {
+      console.error('Failed to create vendor:', error);
+      toast.error(error.response?.data?.detail || 'Failed to create vendor');
+    }
+  };
+
   const handleEditVendor = (vendor) => {
     setSelectedVendor(vendor);
     setEditForm({
@@ -122,6 +168,7 @@ const VendorsPage = () => {
 
   const handleViewVendor = (vendor) => {
     setSelectedVendor(vendor);
+    setViewTab('profile');
     setViewDialogOpen(true);
   };
 
