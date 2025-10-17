@@ -1,13 +1,16 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Form
 from fastapi.security import HTTPBearer
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+import socketio
 import os
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
+import uuid
+import json
 
 # Import models and services
 from models import (
@@ -20,7 +23,7 @@ from models import (
 )
 from auth import (
     get_password_hash, verify_password, create_access_token,
-    get_current_user, require_role
+    get_current_user, require_role, decode_token
 )
 from pricing import (
     get_active_price_rule, calculate_estimate, load_price_rules,
@@ -34,6 +37,14 @@ from payments import (
 )
 from notifications import NotificationService, get_order_confirmation_message
 from uploads import generate_upload_signed_url, simulate_virus_scan
+from customer_auth import (
+    generate_otp, send_otp_sms, store_otp, verify_otp, 
+    create_customer_token, pwd_context
+)
+from vendor_auth import (
+    create_vendor_token, verify_password as verify_vendor_password
+)
+from socketio_manager import sio, notify_vendor
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
