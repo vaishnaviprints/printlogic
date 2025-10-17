@@ -122,9 +122,18 @@ async def seed_database():
     print(f"✓ {len(vendors)} vendors created")
     
     print("\n✅ Database seeded successfully!")
-    print("\nTest Credentials:")
+    print("\n=== Test Credentials ===")
+    print("\n🔐 Admin Portal:")
     print("  Email: admin@vaishnavi.com")
     print("  Password: admin123")
+    print("\n👤 Customer Portal:")
+    print("  Email: customer@test.com")
+    print("  Password: customer123")
+    print("  Mobile: +919876543210")
+    print("\n🏪 Vendor Portal:")
+    print("  Email: central@vaishnavi.com")
+    print("  Password: vendor123")
+    print("\n  (North & South vendors use same password with their respective emails)")
     
     client.close()
 
