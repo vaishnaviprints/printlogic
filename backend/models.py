@@ -210,9 +210,20 @@ class Order(BaseModel):
     appliedPricingSnapshot: Dict[str, Any]
     assigned_vendor_id: Optional[str] = None
     assigned_vendor_snapshot: Optional[Dict[str, Any]] = None
+    vendor_acceptance: Dict[str, Any] = {
+        "status": "pending",  # pending, accepted, declined, timeout
+        "pending_since": None,
+        "accepted_at": None,
+        "declined_at": None,
+        "timeout_at": None,
+        "accepted_by_vendor_id": None,
+        "reassignment_attempts": 0
+    }
+    need_manual_assign: bool = False
     delivery_partner_id: Optional[str] = None
     delivery_tracking_id: Optional[str] = None
     payment_session_id: Optional[str] = None
+    proof_url: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
