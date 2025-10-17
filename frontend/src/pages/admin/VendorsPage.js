@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { CSVLink } from 'react-csv';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,7 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { RefreshCw, MapPin, Phone, Mail, Plus, Edit, Trash2, Award, DollarSign, ShoppingBag, Settings, Eye, Store, CheckCircle, XCircle } from 'lucide-react';
+import { RefreshCw, MapPin, Phone, Mail, Plus, Edit, Trash2, Award, DollarSign, ShoppingBag, Settings, Eye, Store, CheckCircle, XCircle, Download } from 'lucide-react';
+import BadgeProgressBar from '@/components/BadgeProgressBar';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
