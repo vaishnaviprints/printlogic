@@ -28,6 +28,9 @@ async def seed_database():
     await db.payment_sessions.delete_many({})
     await db.pricing_audits.delete_many({})
     
+    # Clear customer data
+    await db.customers.delete_many({})
+    
     # Seed admin user
     admin_user = {
         "id": "user_admin_001",
@@ -42,6 +45,21 @@ async def seed_database():
     }
     await db.users.insert_one(admin_user)
     print("✓ Admin user created (admin@vaishnavi.com / admin123)")
+    
+    # Seed test customer
+    test_customer = {
+        "id": "cust_test_001",
+        "email": "customer@test.com",
+        "password_hash": get_password_hash("customer123"),
+        "name": "Test Customer",
+        "mobile": "+919876543210",
+        "email_verified": True,
+        "mobile_verified": True,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.customers.insert_one(test_customer)
+    print("✓ Test customer created (customer@test.com / customer123 | Mobile: +919876543210)")
     
     # Seed vendors
     vendors = [
