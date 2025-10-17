@@ -1,0 +1,634 @@
+{
+  "info": {
+    "name": "Vaishnavi Printers - Urgent Update API",
+    "description": "API collection for urgent feature updates including admin pricing, vendor management, badges, and order acceptance flow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://printlogic-app.preview.emergentagent.com/api"
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "vendor_token",
+      "value": ""
+    },
+    {
+      "key": "customer_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('admin_token', jsonData.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@vaishnavi.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Vendor Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('vendor_token', jsonData.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "central@vaishnavi.com"
+                },
+                {
+                  "key": "password",
+                  "value": "vendor123"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/vendor/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "vendor", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Pricing Management",
+      "item": [
+        {
+          "name": "Get Paper Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/price-rules/paper-types",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "price-rules", "paper-types"]
+            }
+          }
+        },
+        {
+          "name": "Add Paper Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"a4_100gsm\",\n  \"name\": \"A4 100 GSM Premium\",\n  \"perPage_bw\": 1.00,\n  \"perPage_color\": 5.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/price-rules/paper-types",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "price-rules", "paper-types"]
+            }
+          }
+        },
+        {
+          "name": "Update Paper Type (Creates Audit)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "perPage_bw",
+                  "value": "0.65"
+                },
+                {
+                  "key": "perPage_color",
+                  "value": "3.50"
+                },
+                {
+                  "key": "reason",
+                  "value": "Market rate adjustment for 2025"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/price-rules/paper-types/a4_70gsm",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "price-rules", "paper-types", "a4_70gsm"]
+            }
+          }
+        },
+        {
+          "name": "Delete Paper Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/price-rules/paper-types/a4_100gsm?reason=No longer offering",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "price-rules", "paper-types", "a4_100gsm"],
+              "query": [
+                {
+                  "key": "reason",
+                  "value": "No longer offering"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Pricing Audit History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pricing-audits?rule_id=rule_001",
+              "host": ["{{base_url}}"],
+              "path": ["pricing-audits"],
+              "query": [
+                {
+                  "key": "rule_id",
+                  "value": "rule_001"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Vendor Management",
+      "item": [
+        {
+          "name": "List All Vendors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/vendors/list",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "vendors", "list"]
+            }
+          }
+        },
+        {
+          "name": "Update Vendor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certified\": true,\n  \"badge\": \"platinum\",\n  \"description\": \"Top-rated certified vendor\",\n  \"autoAcceptRadiusKm\": 10.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/vendors/vendor_central",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "vendors", "vendor_central"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Badge Configuration",
+      "item": [
+        {
+          "name": "Get Badge Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/badges/config",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "badges", "config"]
+            }
+          }
+        },
+        {
+          "name": "Update Badge Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bronze\": {\n    \"minSales\": 15,\n    \"color\": \"#CD7F32\"\n  },\n  \"silver\": {\n    \"minSales\": 60,\n    \"color\": \"#C0C0C0\"\n  },\n  \"gold\": {\n    \"minSales\": 250,\n    \"color\": \"#FFD700\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/badges/config",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "badges", "config"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor - Registration & Profile",
+      "item": [
+        {
+          "name": "Register New Vendor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Print Express\",\n  \"shop_name\": \"Print Express Store\",\n  \"location\": {\n    \"latitude\": 12.9350,\n    \"longitude\": 77.6245,\n    \"address\": \"Koramangala, Bangalore\",\n    \"city\": \"Bangalore\",\n    \"pincode\": \"560034\"\n  },\n  \"contact_phone\": \"+919988776655\",\n  \"contact_email\": \"express@print.com\",\n  \"password\": \"express123\",\n  \"address\": \"45 Koramangala 5th Block\",\n  \"description\": \"Fast printing services\",\n  \"autoAcceptRadiusKm\": 5.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/register",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Vendor Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/profile",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Vendor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "Vaishnavi Central Premium"
+                },
+                {
+                  "key": "description",
+                  "value": "Premium printing with same-day delivery"
+                },
+                {
+                  "key": "working_hours",
+                  "value": "8 AM - 10 PM"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/profile",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor - Store Toggle",
+      "item": [
+        {
+          "name": "Close Store",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "store_open",
+                  "value": "false"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/store",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "store"]
+            }
+          }
+        },
+        {
+          "name": "Open Store",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "store_open",
+                  "value": "true"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/store",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "store"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor - Order Actions",
+      "item": [
+        {
+          "name": "Get Vendor Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/orders",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Accept Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "action",
+                  "value": "accept"
+                },
+                {
+                  "key": "note",
+                  "value": "Order accepted, will start immediately"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/orders/order_abc123/action",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "orders", "order_abc123", "action"]
+            }
+          }
+        },
+        {
+          "name": "Decline Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "action",
+                  "value": "decline"
+                },
+                {
+                  "key": "note",
+                  "value": "Too busy with current orders"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/vendor/orders/order_abc123/action",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "orders", "order_abc123", "action"]
+            }
+          }
+        },
+        {
+          "name": "Start Production",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/orders/order_abc123/start",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "orders", "order_abc123", "start"]
+            }
+          }
+        },
+        {
+          "name": "Complete Order (with Badge Check)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/vendor/orders/order_abc123/complete?proof_url=https://s3.../proof.jpg",
+              "host": ["{{base_url}}"],
+              "path": ["vendor", "orders", "order_abc123", "complete"],
+              "query": [
+                {
+                  "key": "proof_url",
+                  "value": "https://s3.../proof.jpg"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders - Manual Assignment",
+      "item": [
+        {
+          "name": "Get Orders Needing Manual Assignment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders?need_manual_assign=true",
+              "host": ["{{base_url}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "need_manual_assign",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Manually Assign Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Assigned\",\n  \"assigned_vendor_id\": \"vendor_south\",\n  \"note\": \"Manually assigned by admin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/order_xyz789/status",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "order_xyz789", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
