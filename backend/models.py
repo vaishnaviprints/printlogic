@@ -133,9 +133,23 @@ class Vendor(BaseModel):
     
     id: str = Field(default_factory=lambda: f"vendor_{uuid.uuid4().hex[:8]}")
     name: str
+    shop_name: str
+    registration_number: str = ""
+    certified: bool = False
+    badge: str = "none"  # none, bronze, silver, gold, diamond, platinum
     location: VendorLocation
     contact_phone: str
     contact_email: str
+    password_hash: Optional[str] = None
+    address: str = ""
+    working_hours: str = "9 AM - 6 PM"
+    store_open: bool = True
+    current_workload_count: int = 0
+    total_sales: int = 0
+    total_earnings: float = 0.0
+    profile_image_url: Optional[str] = None
+    description: str = ""
+    payout_history: List[Dict[str, Any]] = []
     autoAcceptRadiusKm: float = 5.0
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
