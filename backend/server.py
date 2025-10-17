@@ -1155,18 +1155,18 @@ async def create_order(order_data: OrderCreate):
         # Get active price rule for snapshot
         price_rule = get_active_price_rule()
         
-        # Auto-assign vendor for pickup
+        # Auto-assign vendor for pickup using new system
         assigned_vendor_id = None
         assigned_vendor_snapshot = None
         
         if order_data.fulfillment_type.value == "Pickup" and order_data.customer_location:
-            vendors = await db.vendors.find({"is_active": True}, {"_id": 0}).to_list(10)
-            vendor_objs = [Vendor(**v) for v in vendors]
-            assignment = await auto_assign_vendor(order_data.customer_location, vendor_objs)
+            from order_assignment import find_eligible_vendors
+            eligible_vendors = await find_eligible_vendors(order_data.customer_location, db)
             
-            if assignment['status'] == 'auto_assigned':
-                assigned_vendor_id = assignment['vendor'].id
-                assigned_vendor_snapshot = assignment['vendor'].model_dump()
+            if eligible_vendors:
+                # Get first eligible vendor
+                first_vendor = eligible_vendors[0]['vendor']
+                assigned_vendor_id = first_vendor.id
         
         # Create order with statusHistory
         initial_status = {
