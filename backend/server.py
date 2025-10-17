@@ -254,6 +254,46 @@ async def get_customer_orders(current_user: dict = Depends(get_current_user)):
 
 # ==================== VENDOR AUTH & DASHBOARD ====================
 
+@api_router.post("/vendor/register")
+async def vendor_register(vendor_data: VendorCreate):
+    """Register new vendor"""
+    from vendor_auth import get_password_hash
+    from badge_system import generate_registration_number
+    
+    # Check if email already exists
+    existing = await db.vendors.find_one({"contact_email": vendor_data.contact_email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Generate registration number
+    reg_number = generate_registration_number()
+    
+    # Create vendor
+    vendor = Vendor(
+        name=vendor_data.name,
+        shop_name=vendor_data.shop_name,
+        registration_number=reg_number,
+        location=vendor_data.location,
+        contact_phone=vendor_data.contact_phone,
+        contact_email=vendor_data.contact_email,
+        password_hash=get_password_hash(vendor_data.password),
+        address=vendor_data.address,
+        description=vendor_data.description,
+        autoAcceptRadiusKm=vendor_data.autoAcceptRadiusKm
+    )
+    
+    vendor_dict = vendor.model_dump()
+    vendor_dict['created_at'] = vendor_dict['created_at'].isoformat()
+    vendor_dict['updated_at'] = vendor_dict['updated_at'].isoformat()
+    
+    await db.vendors.insert_one(vendor_dict)
+    
+    return {
+        "message": "Vendor registered successfully",
+        "vendor_id": vendor.id,
+        "registration_number": reg_number
+    }
+
 @api_router.post("/auth/vendor/login")
 async def vendor_login(email: str = Form(...), password: str = Form(...)):
     """Vendor login"""
@@ -264,11 +304,19 @@ async def vendor_login(email: str = Form(...), password: str = Form(...)):
     if not verify_vendor_password(password, vendor['password_hash']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    token = create_vendor_token(vendor['id'], vendor['contact_email'], vendor['name'])
+    token = create_vendor_token(vendor['id'], vendor['contact_email'], vendor.get('shop_name', vendor['name']))
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user": {"id": vendor['id'], "name": vendor['name'], "email": vendor['contact_email'], "type": "vendor"}
+        "user": {
+            "id": vendor['id'],
+            "name": vendor['name'],
+            "shop_name": vendor.get('shop_name', vendor['name']),
+            "email": vendor['contact_email'],
+            "type": "vendor",
+            "badge": vendor.get('badge', 'none'),
+            "certified": vendor.get('certified', False)
+        }
     }
 
 @api_router.get("/vendor/orders")
