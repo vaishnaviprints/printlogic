@@ -242,6 +242,25 @@ const VendorsPage = () => {
     return matchesSearch && matchesBadge && matchesStatus;
   });
 
+  // Prepare CSV data
+  const csvData = vendors.map(v => ({
+    'Vendor ID': v.id,
+    'Name': v.name,
+    'Shop Name': v.shop_name,
+    'Email': v.contact_email,
+    'Phone': v.contact_phone,
+    'Registration Number': v.registration_number,
+    'Badge': v.badge,
+    'Certified': v.certified ? 'Yes' : 'No',
+    'Status': v.is_active ? 'Active' : 'Inactive',
+    'Store Open': v.store_open ? 'Open' : 'Closed',
+    'Total Sales': v.total_sales || 0,
+    'Total Earnings': v.total_earnings || 0,
+    'Auto Accept Radius (km)': v.autoAcceptRadiusKm,
+    'City': v.location?.city,
+    'Address': v.location?.address
+  }));
+
   return (
     <div data-testid="vendors-page">
       <Tabs defaultValue="vendors" className="space-y-6">
