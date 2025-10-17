@@ -31,28 +31,28 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className=\"App\">
+        <div className="App">
           <Routes>
             {/* Public routes */}
-            <Route path=\"/\" element={<HomePage />} />
-            <Route path=\"/about\" element={<AboutPage />} />
-            <Route path=\"/pricing\" element={<PricingPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             
             {/* Customer routes */}
-            <Route path=\"/login\" element={<CustomerLoginPage />} />
-            <Route path=\"/register\" element={<CustomerRegisterPage />} />
-            <Route path=\"/print\" element={<CustomerPortal />} />
-            <Route path=\"/my-orders\" element={<MyOrdersPage />} />
-            <Route path=\"/track/:orderId\" element={<OrderTrackingPage />} />
+            <Route path="/login" element={<CustomerLoginPage />} />
+            <Route path="/register" element={<CustomerRegisterPage />} />
+            <Route path="/print" element={<CustomerPortal />} />
+            <Route path="/my-orders" element={<MyOrdersPage />} />
+            <Route path="/track/:orderId" element={<OrderTrackingPage />} />
             
             {/* Vendor routes */}
-            <Route path=\"/vendor/login\" element={<VendorLoginPage />} />
-            <Route path=\"/vendor/dashboard\" element={<VendorDashboard />} />
+            <Route path="/vendor/login" element={<VendorLoginPage />} />
+            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             
             {/* Admin routes */}
-            <Route path=\"/admin/login\" element={<AdminLoginPage />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route
-              path=\"/admin/*\"
+              path="/admin/*"
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
@@ -60,9 +60,9 @@ function App() {
               }
             />
             
-            <Route path=\"*\" element={<Navigate to=\"/\" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-          <Toaster position=\"top-right\" />
+          <Toaster position="top-right" />
         </div>
       </BrowserRouter>
     </AuthProvider>
