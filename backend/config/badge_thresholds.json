@@ -1,0 +1,26 @@
+{
+  "none": {
+    "minSales": 0,
+    "color": "#9CA3AF"
+  },
+  "bronze": {
+    "minSales": 10,
+    "color": "#CD7F32"
+  },
+  "silver": {
+    "minSales": 50,
+    "color": "#C0C0C0"
+  },
+  "gold": {
+    "minSales": 200,
+    "color": "#FFD700"
+  },
+  "diamond": {
+    "minSales": 500,
+    "color": "#B9F2FF"
+  },
+  "platinum": {
+    "minSales": 1000,
+    "color": "#E5E4E2"
+  }
+}
