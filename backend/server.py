@@ -968,6 +968,46 @@ async def update_order_status(
     
     return {"status": "updated"}
 
+# ==================== PAYMENT GATEWAY ADMIN ====================
+
+@api_router.get("/admin/payment-gateway/config")
+async def get_payment_gateway_config(current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))):
+    """Get payment gateway configuration (admin only)"""
+    import json
+    config_path = Path(__file__).parent / "config" / "payment_gateways.json"
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+    
+    # Remove sensitive keys before sending
+    for gateway in config['gateways']:
+        for key in list(gateway.keys()):
+            if 'secret' in key.lower() or 'key' in key.lower():
+                gateway[key] = "***HIDDEN***" if gateway[key] else ""
+    
+    return config
+
+@api_router.post("/admin/payment-gateway/update")
+async def update_payment_gateway_config(
+    gateway_id: str = Form(...),
+    active_gateway: str = Form(...),
+    mode: str = Form(...),
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Update payment gateway settings"""
+    import json
+    config_path = Path(__file__).parent / "config" / "payment_gateways.json"
+    
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+    
+    config['activeGateway'] = active_gateway
+    config['mode'] = mode
+    
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=2)
+    
+    return {"message": "Payment gateway configuration updated", "activeGateway": active_gateway, "mode": mode}
+
 # ==================== PAYMENT ENDPOINTS ====================
 
 @api_router.post("/payments/create-session", response_model=PaymentSession)
