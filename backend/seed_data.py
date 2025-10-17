@@ -75,6 +75,7 @@ async def seed_database():
             },
             "contact_phone": "+919876543210",
             "contact_email": "central@vaishnavi.com",
+            "password_hash": get_password_hash("vendor123"),
             "autoAcceptRadiusKm": 5.0,
             "is_active": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
