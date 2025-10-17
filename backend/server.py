@@ -1197,20 +1197,24 @@ async def create_order(order_data: OrderCreate):
         order_dict['updated_at'] = order_dict['updated_at'].isoformat()
         order_dict['statusHistory'] = [initial_status]
         
+        # Initialize vendor_acceptance
+        if not order_dict.get('vendor_acceptance'):
+            order_dict['vendor_acceptance'] = {
+                "status": "pending",
+                "pending_since": datetime.now(timezone.utc).isoformat() if assigned_vendor_id else None,
+                "accepted_at": None,
+                "declined_at": None,
+                "timeout_at": None,
+                "accepted_by_vendor_id": None,
+                "reassignment_attempts": 0
+            }
+        
         await db.orders.insert_one(order_dict)
         
-        # Notify vendor if assigned
+        # Assign to vendor using new system
         if assigned_vendor_id:
-            await notify_vendor(
-                assigned_vendor_id,
-                "order.new",
-                {
-                    "orderId": order.id,
-                    "summary": f"{len(order.items)} file(s) - {sum(item.num_pages for item in order.items)} pages",
-                    "total": f"\u20b9{order.total:.2f}",
-                    "createdAt": order_dict['created_at']
-                }
-            )
+            from order_assignment import assign_order_to_vendor
+            await assign_order_to_vendor(order.id, assigned_vendor_id, db, notify_vendor)
         
         return order
     except Exception as e:
