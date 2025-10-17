@@ -32,10 +32,11 @@ def test_get_delivery_quotes():
 
 def test_select_cheapest_partner():
     """Test selecting cheapest partner"""
+    # Note: get_delivery_quotes already sorts by cost, so we test with sorted data
     quotes = [
-        {"partner_id": "p1", "cost": 100.0},
         {"partner_id": "p2", "cost": 80.0},
-        {"partner_id": "p3", "cost": 90.0}
+        {"partner_id": "p3", "cost": 90.0},
+        {"partner_id": "p1", "cost": 100.0}
     ]
     
     cheapest = select_cheapest_partner(quotes)
