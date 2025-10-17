@@ -55,8 +55,15 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app
-app = FastAPI(title="Vaishnavi Printers API")
+app = FastAPI(title="Vaishnavi Printers API - Phase 1")
 api_router = APIRouter(prefix="/api")
+
+# Wrap with Socket.IO
+socket_app = socketio.ASGIApp(
+    sio, 
+    app,
+    socketio_path='socket.io'
+)
 
 # Notification service
 notification_service = NotificationService(mode="SIMULATED")
