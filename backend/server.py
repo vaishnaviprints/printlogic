@@ -377,6 +377,150 @@ async def vendor_complete_order(order_id: str, proof_url: Optional[str] = None, 
     
     return {"message": "Order completed", "status": "success"}
 
+# ==================== ADMIN PRICING MANAGER ====================
+
+@api_router.get("/admin/price-rules/paper-types")
+async def get_paper_types(current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN, UserRole.SUPERVISOR]))):
+    """Get all paper types from active rule"""
+    rule = get_active_price_rule()
+    if not rule:
+        return []
+    return rule.paperTypes
+
+@api_router.post("/admin/price-rules/paper-types")
+async def create_paper_type(
+    paper_type: Dict[str, Any],
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Add new paper type to active rule"""
+    rules = load_price_rules()
+    active_rule = next((r for r in rules if r.active), None)
+    
+    if not active_rule:
+        raise HTTPException(status_code=404, detail="No active price rule")
+    
+    # Create audit entry
+    previous_value = active_rule.model_dump()
+    
+    # Add new paper type
+    from models import PaperType
+    new_paper_type = PaperType(**paper_type)
+    active_rule.paperTypes.append(new_paper_type)
+    active_rule.updated_at = datetime.now(timezone.utc)
+    
+    # Save
+    save_price_rules(rules)
+    
+    # Log audit
+    audit = PricingAudit(
+        rule_id=active_rule.id,
+        changed_by=current_user['email'],
+        reason="Added new paper type",
+        diff={"paperTypes": {"action": "add", "value": paper_type}},
+        previous_value=previous_value,
+        new_value=active_rule.model_dump()
+    )
+    
+    audit_dict = audit.model_dump()
+    audit_dict['changed_at'] = audit_dict['changed_at'].isoformat()
+    await db.pricing_audits.insert_one(audit_dict)
+    
+    return {"message": "Paper type added", "paper_type": new_paper_type}
+
+@api_router.put("/admin/price-rules/paper-types/{paper_type_id}")
+async def update_paper_type(
+    paper_type_id: str,
+    updates: Dict[str, Any],
+    reason: str = Form(...),
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Update paper type pricing"""
+    rules = load_price_rules()
+    active_rule = next((r for r in rules if r.active), None)
+    
+    if not active_rule:
+        raise HTTPException(status_code=404, detail="No active price rule")
+    
+    # Find paper type
+    paper_type = next((pt for pt in active_rule.paperTypes if pt.id == paper_type_id), None)
+    if not paper_type:
+        raise HTTPException(status_code=404, detail="Paper type not found")
+    
+    # Store previous value
+    previous_value = active_rule.model_dump()
+    previous_pt = paper_type.model_dump()
+    
+    # Apply updates
+    for key, value in updates.items():
+        if hasattr(paper_type, key):
+            setattr(paper_type, key, value)
+    
+    active_rule.updated_at = datetime.now(timezone.utc)
+    
+    # Save
+    save_price_rules(rules)
+    
+    # Log audit with diff
+    diff = {}
+    for key in updates.keys():
+        if key in previous_pt and previous_pt[key] != getattr(paper_type, key):
+            diff[key] = {"old": previous_pt[key], "new": getattr(paper_type, key)}
+    
+    audit = PricingAudit(
+        rule_id=active_rule.id,
+        changed_by=current_user['email'],
+        reason=reason,
+        diff={"paperType": paper_type_id, "changes": diff},
+        previous_value=previous_value,
+        new_value=active_rule.model_dump()
+    )
+    
+    audit_dict = audit.model_dump()
+    audit_dict['changed_at'] = audit_dict['changed_at'].isoformat()
+    await db.pricing_audits.insert_one(audit_dict)
+    
+    return {"message": "Paper type updated", "paper_type": paper_type}
+
+@api_router.delete("/admin/price-rules/paper-types/{paper_type_id}")
+async def delete_paper_type(
+    paper_type_id: str,
+    reason: str,
+    current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
+):
+    """Delete paper type"""
+    rules = load_price_rules()
+    active_rule = next((r for r in rules if r.active), None)
+    
+    if not active_rule:
+        raise HTTPException(status_code=404, detail="No active price rule")
+    
+    # Find and remove paper type
+    paper_type = next((pt for pt in active_rule.paperTypes if pt.id == paper_type_id), None)
+    if not paper_type:
+        raise HTTPException(status_code=404, detail="Paper type not found")
+    
+    previous_value = active_rule.model_dump()
+    active_rule.paperTypes = [pt for pt in active_rule.paperTypes if pt.id != paper_type_id]
+    active_rule.updated_at = datetime.now(timezone.utc)
+    
+    save_price_rules(rules)
+    
+    # Log audit
+    audit = PricingAudit(
+        rule_id=active_rule.id,
+        changed_by=current_user['email'],
+        reason=reason,
+        diff={"paperTypes": {"action": "delete", "id": paper_type_id}},
+        previous_value=previous_value,
+        new_value=active_rule.model_dump()
+    )
+    
+    audit_dict = audit.model_dump()
+    audit_dict['changed_at'] = audit_dict['changed_at'].isoformat()
+    await db.pricing_audits.insert_one(audit_dict)
+    
+    return {"message": "Paper type deleted"}
+
 # ==================== PRICE RULES ENDPOINTS ====================
 
 @api_router.get("/price-rules", response_model=List[PriceRule])
