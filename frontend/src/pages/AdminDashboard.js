@@ -22,6 +22,8 @@ const AdminDashboard = () => {
     const path = location.pathname;
     if (path.includes('pricing')) return 'pricing';
     if (path.includes('vendors')) return 'vendors';
+    if (path.includes('reports')) return 'reports';
+    if (path.includes('audits')) return 'audits';
     if (path.includes('settings')) return 'settings';
     return 'orders';
   };
