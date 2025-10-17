@@ -1,53 +1,43 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import '@/App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Import pages
+import HomePage from '@/pages/HomePage';
+import AdminLoginPage from '@/pages/AdminLoginPage';
+import AdminDashboard from '@/pages/AdminDashboard';
+import CustomerPortal from '@/pages/CustomerPortal';
+import OrderTrackingPage from '@/pages/OrderTrackingPage';
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+// Auth context
+import { AuthProvider } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 function App() {
   return (
-    <div className="App">
+    <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/print" element={<CustomerPortal />} />
+            <Route path="/track/:orderId" element={<OrderTrackingPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <Toaster position="top-right" />
+        </div>
       </BrowserRouter>
-    </div>
+    </AuthProvider>
   );
 }
 
