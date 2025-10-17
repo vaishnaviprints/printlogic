@@ -37,11 +37,13 @@ const VendorsPage = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   
   // Modals
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [badgeConfigDialogOpen, setBadgeConfigDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState(null);
+  const [viewTab, setViewTab] = useState('profile');
   
   // Badge config
   const [badgeConfig, setBadgeConfig] = useState({});
@@ -49,6 +51,28 @@ const VendorsPage = () => {
   
   // Edit form
   const [editForm, setEditForm] = useState({});
+  
+  // Create form
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    shop_name: '',
+    contact_email: '',
+    contact_phone: '',
+    password: '',
+    location: {
+      address: '',
+      city: '',
+      pincode: '',
+      latitude: 0,
+      longitude: 0
+    },
+    address: '',
+    description: '',
+    autoAcceptRadiusKm: 5,
+    certified: false,
+    badge: 'none',
+    working_hours: '9 AM - 6 PM'
+  });
 
   useEffect(() => {
     fetchVendors();
