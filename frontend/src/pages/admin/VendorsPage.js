@@ -269,10 +269,22 @@ const VendorsPage = () => {
             <TabsTrigger value="vendors">Vendors List</TabsTrigger>
             <TabsTrigger value="badges">Badge System</TabsTrigger>
           </TabsList>
-          <Button onClick={fetchVendors} disabled={loading} variant="outline" data-testid="refresh-vendors-btn">
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <CSVLink data={csvData} filename="vendors-export.csv">
+              <Button variant="outline">
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </Button>
+            </CSVLink>
+            <Button onClick={fetchVendors} disabled={loading} variant="outline" data-testid="refresh-vendors-btn">
+              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button onClick={() => setCreateDialogOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              New Vendor
+            </Button>
+          </div>
         </div>
 
         {/* Vendors List Tab */}
