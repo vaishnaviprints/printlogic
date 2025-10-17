@@ -82,6 +82,14 @@ const AdminDashboard = () => {
                 <MapPin className="w-4 h-4" />
                 Vendors
               </TabsTrigger>
+              <TabsTrigger value="reports" className="gap-2" data-testid="reports-tab">
+                <BarChart3 className="w-4 h-4" />
+                Reports
+              </TabsTrigger>
+              <TabsTrigger value="audits" className="gap-2" data-testid="audits-tab">
+                <FileText className="w-4 h-4" />
+                Audit Logs
+              </TabsTrigger>
               <TabsTrigger value="settings" className="gap-2" data-testid="settings-tab">
                 <Settings className="w-4 h-4" />
                 Settings
