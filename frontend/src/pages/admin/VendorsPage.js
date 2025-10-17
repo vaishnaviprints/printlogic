@@ -56,7 +56,7 @@ const VendorsPage = () => {
   const fetchVendors = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('admin_token');
       const response = await axios.get(`${API}/admin/vendors/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -71,7 +71,7 @@ const VendorsPage = () => {
 
   const fetchBadgeConfig = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('admin_token');
       const response = await axios.get(`${API}/admin/badges/config`, {
         headers: { Authorization: `Bearer ${token}` }
       });
