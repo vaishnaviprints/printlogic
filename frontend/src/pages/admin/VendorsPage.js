@@ -712,87 +712,167 @@ const VendorsPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* View Vendor Dialog */}
+      {/* View Vendor Dialog - Enhanced with Tabs */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Vendor Details</DialogTitle>
           </DialogHeader>
           {selectedVendor && (
-            <div className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-gray-500">Vendor Name</Label>
-                  <div className="font-medium">{selectedVendor.name}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Shop Name</Label>
-                  <div className="font-medium">{selectedVendor.shop_name}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Registration Number</Label>
-                  <div className="font-medium">{selectedVendor.registration_number}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Status</Label>
-                  <div className="flex gap-2">
-                    <Badge variant={selectedVendor.is_active ? "default" : "secondary"}>
-                      {selectedVendor.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                    {selectedVendor.certified && (
-                      <Badge variant="outline" className="text-green-600 border-green-600">
-                        Certified
+            <Tabs value={viewTab} onValueChange={setViewTab}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="sales">Sales History</TabsTrigger>
+                <TabsTrigger value="transactions">Transactions</TabsTrigger>
+              </TabsList>
+
+              {/* Profile Tab */}
+              <TabsContent value="profile" className="space-y-4 mt-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-gray-500">Vendor Name</Label>
+                    <div className="font-medium">{selectedVendor.name}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Shop Name</Label>
+                    <div className="font-medium">{selectedVendor.shop_name}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Registration Number</Label>
+                    <div className="font-medium">{selectedVendor.registration_number}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Status</Label>
+                    <div className="flex gap-2">
+                      <Badge variant={selectedVendor.is_active ? "default" : "secondary"}>
+                        {selectedVendor.is_active ? 'Active' : 'Inactive'}
                       </Badge>
-                    )}
+                      {selectedVendor.certified && (
+                        <Badge variant="outline" className="text-green-600 border-green-600">
+                          Certified
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-gray-500">Description</Label>
+                    <div className="font-medium">{selectedVendor.description || 'N/A'}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Contact Phone</Label>
+                    <div className="font-medium">{selectedVendor.contact_phone}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Contact Email</Label>
+                    <div className="font-medium">{selectedVendor.contact_email}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Working Hours</Label>
+                    <div className="font-medium">{selectedVendor.working_hours || 'N/A'}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Auto-Accept Radius</Label>
+                    <div className="font-medium">{selectedVendor.autoAcceptRadiusKm} km</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Current Workload</Label>
+                    <div className="font-medium">{selectedVendor.current_workload_count || 0} orders</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Total Sales</Label>
+                    <div className="font-medium text-lg">{selectedVendor.total_sales || 0}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Total Earnings</Label>
+                    <div className="font-medium text-lg">₹{(selectedVendor.total_earnings || 0).toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <Label className="text-gray-500">Badge</Label>
+                    <Badge style={{ backgroundColor: getBadgeColor(selectedVendor.badge) }} className="text-white">
+                      <Award className="w-3 h-3 mr-1" />
+                      {(selectedVendor.badge || 'none').toUpperCase()}
+                    </Badge>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-gray-500">Address</Label>
+                    <div className="font-medium">
+                      {selectedVendor.location?.address}, {selectedVendor.location?.city} - {selectedVendor.location?.pincode}
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <BadgeProgressBar
+                      currentBadge={selectedVendor.badge}
+                      totalSales={selectedVendor.total_sales || 0}
+                      badgeConfig={badgeConfig}
+                    />
                   </div>
                 </div>
-                <div className="md:col-span-2">
-                  <Label className="text-gray-500">Description</Label>
-                  <div className="font-medium">{selectedVendor.description || 'N/A'}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Contact Phone</Label>
-                  <div className="font-medium">{selectedVendor.contact_phone}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Contact Email</Label>
-                  <div className="font-medium">{selectedVendor.contact_email}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Working Hours</Label>
-                  <div className="font-medium">{selectedVendor.working_hours || 'N/A'}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Auto-Accept Radius</Label>
-                  <div className="font-medium">{selectedVendor.autoAcceptRadiusKm} km</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Current Workload</Label>
-                  <div className="font-medium">{selectedVendor.current_workload_count || 0} orders</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Total Sales</Label>
-                  <div className="font-medium text-lg">{selectedVendor.total_sales || 0}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Total Earnings</Label>
-                  <div className="font-medium text-lg">₹{(selectedVendor.total_earnings || 0).toLocaleString()}</div>
-                </div>
-                <div>
-                  <Label className="text-gray-500">Badge</Label>
-                  <Badge style={{ backgroundColor: getBadgeColor(selectedVendor.badge) }} className="text-white">
-                    <Award className="w-3 h-3 mr-1" />
-                    {(selectedVendor.badge || 'none').toUpperCase()}
-                  </Badge>
-                </div>
-                <div className="md:col-span-2">
-                  <Label className="text-gray-500">Address</Label>
-                  <div className="font-medium">
-                    {selectedVendor.location?.address}, {selectedVendor.location?.city} - {selectedVendor.location?.pincode}
-                  </div>
-                </div>
-              </div>
-            </div>
+              </TabsContent>
+
+              {/* Sales History Tab */}
+              <TabsContent value="sales" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Sales History</CardTitle>
+                    <CardDescription>Order history and performance metrics</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg">
+                          <div className="text-sm text-gray-600">Total Orders</div>
+                          <div className="text-2xl font-bold text-blue-900">{selectedVendor.total_sales || 0}</div>
+                        </div>
+                        <div className="p-4 bg-green-50 rounded-lg">
+                          <div className="text-sm text-gray-600">Total Earnings</div>
+                          <div className="text-2xl font-bold text-green-900">₹{(selectedVendor.total_earnings || 0).toLocaleString()}</div>
+                        </div>
+                        <div className="p-4 bg-purple-50 rounded-lg">
+                          <div className="text-sm text-gray-600">Avg Order Value</div>
+                          <div className="text-2xl font-bold text-purple-900">
+                            ₹{selectedVendor.total_sales > 0 ? Math.round((selectedVendor.total_earnings || 0) / selectedVendor.total_sales).toLocaleString() : 0}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-center py-8 text-gray-500">
+                        <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                        <p>Detailed sales history will be displayed here</p>
+                        <p className="text-sm mt-2">Order-by-order breakdown with dates and amounts</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Transactions Tab */}
+              <TabsContent value="transactions" className="space-y-4 mt-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Transaction Summary</CardTitle>
+                    <CardDescription>Payout tracking and transaction history</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="p-4 border rounded-lg">
+                          <div className="text-sm text-gray-600 mb-1">Pending Payouts</div>
+                          <div className="text-2xl font-bold text-orange-600">₹0</div>
+                        </div>
+                        <div className="p-4 border rounded-lg">
+                          <div className="text-sm text-gray-600 mb-1">Paid Out</div>
+                          <div className="text-2xl font-bold text-green-600">₹{(selectedVendor.total_earnings || 0).toLocaleString()}</div>
+                        </div>
+                      </div>
+                      <div className="text-center py-8 text-gray-500">
+                        <DollarSign className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                        <p>Transaction details will be displayed here</p>
+                        <p className="text-sm mt-2">Payment history, payout dates, and commission breakdown</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           )}
         </DialogContent>
       </Dialog>
