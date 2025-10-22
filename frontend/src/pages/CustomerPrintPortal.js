@@ -739,7 +739,7 @@ const CustomerPrintPortal = () => {
                         <Input
                           value={deliveryAddress.city}
                           onChange={(e) => setDeliveryAddress({...deliveryAddress, city: e.target.value})}
-                          placeholder="Bangalore"
+                          placeholder="Hyderabad"
                         />
                       </div>
                       <div>
