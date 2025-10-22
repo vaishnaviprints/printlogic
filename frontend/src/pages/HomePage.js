@@ -141,7 +141,7 @@ const HomePage = () => {
                 <span className="font-bold text-lg">Vaishnavi Printers</span>
               </div>
               <p className="text-gray-400 text-sm">
-                Professional printing services with fast delivery across Bangalore
+                Professional printing services with fast delivery across Hyderabad
               </p>
             </div>
 
