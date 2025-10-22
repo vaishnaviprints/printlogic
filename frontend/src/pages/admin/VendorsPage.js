@@ -810,6 +810,141 @@ const VendorsPage = () => {
                 </div>
               </TabsContent>
 
+              {/* Banking Tab */}
+              <TabsContent value="banking" className="space-y-4 mt-4">
+                <Card className="border-2 border-green-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                      Bank Account Details
+                    </CardTitle>
+                    <CardDescription>For weekly payout processing</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {selectedVendor.bank_details ? (
+                      <div className="space-y-4">
+                        {/* Verification Status */}
+                        <div className={`p-4 rounded-lg border-2 ${selectedVendor.bank_details.verified ? 'bg-green-50 border-green-300' : 'bg-yellow-50 border-yellow-300'}`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            {selectedVendor.bank_details.verified ? (
+                              <>
+                                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="font-semibold text-green-900">Verified ✅</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="font-semibold text-yellow-900">Pending Verification</span>
+                              </>
+                            )}
+                          </div>
+                          <p className="text-sm">
+                            {selectedVendor.bank_details.verified 
+                              ? 'Bank details verified. Payouts enabled.'
+                              : 'Verify bank details to enable weekly payouts.'}
+                          </p>
+                        </div>
+
+                        {/* Bank Details Display */}
+                        <div className="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                          <div>
+                            <Label className="text-xs text-gray-500">Account Holder Name</Label>
+                            <div className="font-semibold">{selectedVendor.bank_details.account_holder_name}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500">Account Number</Label>
+                            <div className="font-mono font-semibold">
+                              {selectedVendor.bank_details.account_number.replace(/(\d{4})/g, '$1 ').trim()}
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500">IFSC Code</Label>
+                            <div className="font-mono font-semibold">{selectedVendor.bank_details.ifsc_code}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500">Bank Name</Label>
+                            <div className="font-semibold">{selectedVendor.bank_details.bank_name}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500">Branch</Label>
+                            <div className="font-semibold">{selectedVendor.bank_details.branch_name}</div>
+                          </div>
+                          <div>
+                            <Label className="text-xs text-gray-500">Account Type</Label>
+                            <Badge variant="outline">{selectedVendor.bank_details.account_type}</Badge>
+                          </div>
+                        </div>
+
+                        {/* Admin Actions */}
+                        {!selectedVendor.bank_details.verified && (
+                          <div className="flex gap-3 pt-4 border-t">
+                            <Button
+                              onClick={async () => {
+                                try {
+                                  const token = localStorage.getItem('admin_token');
+                                  await axios.put(
+                                    `${API}/admin/vendors/${selectedVendor.id}/banking`,
+                                    { ...selectedVendor.bank_details, verified: true },
+                                    { headers: { Authorization: `Bearer ${token}` } }
+                                  );
+                                  toast.success('Bank details verified!');
+                                  fetchVendors();
+                                  setViewDialogOpen(false);
+                                } catch (error) {
+                                  toast.error('Failed to verify bank details');
+                                }
+                              }}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Verify Bank Details
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="text-red-600 border-red-300"
+                            >
+                              Reject (Request Update)
+                            </Button>
+                          </div>
+                        )}
+
+                        {/* Disclaimer */}
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
+                          <p className="font-semibold text-red-900 mb-1">⚠️ Important</p>
+                          <p className="text-red-800">
+                            Vendor is responsible for accuracy of bank details. 
+                            Vaishnavi Printers is not liable for failed transfers due to incorrect information.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                        <p className="text-gray-600 font-medium mb-2">No Bank Details Added</p>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Vendor hasn't added bank details yet. Payouts are disabled.
+                        </p>
+                        <Button variant="outline" onClick={() => {
+                          toast.info('Ask vendor to add bank details from their dashboard');
+                        }}>
+                          Notify Vendor
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {/* Sales History Tab */}
               <TabsContent value="sales" className="space-y-4 mt-4">
                 <Card>
