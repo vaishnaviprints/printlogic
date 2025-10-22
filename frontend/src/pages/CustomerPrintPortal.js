@@ -88,9 +88,15 @@ const CustomerPrintPortal = () => {
         
         // Calculate pages based on file type
         if (fileType === 'application/pdf') {
-          // For PDF, we'll need to parse it - simplified for now
-          // In real implementation, use PDF.js to count pages
-          pageCount = await countPdfPages(file);
+          // PROPER PDF page counting using PDF.js
+          try {
+            pageCount = await countPdfPages(file);
+            console.log(`PDF ${file.name}: ${pageCount} pages`);
+          } catch (error) {
+            console.error('Error counting PDF pages:', error);
+            toast.error(`Failed to count pages in ${file.name}`);
+            pageCount = 1;
+          }
         } else if (fileType.startsWith('image/')) {
           pageCount = 1; // Each image = 1 page
         } else {
@@ -122,10 +128,27 @@ const CustomerPrintPortal = () => {
   };
   
   const countPdfPages = async (file) => {
-    // Simplified PDF page counting - in production use PDF.js
-    // For now, estimate based on file size (rough approximation)
-    const estimatedPages = Math.ceil(file.size / 50000); // ~50KB per page estimate
-    return Math.max(1, Math.min(estimatedPages, 500)); // Cap at 500 pages
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      
+      fileReader.onload = async function() {
+        try {
+          const typedArray = new Uint8Array(this.result);
+          const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+          const pageCount = pdf.numPages;
+          resolve(pageCount);
+        } catch (error) {
+          console.error('PDF parsing error:', error);
+          reject(error);
+        }
+      };
+      
+      fileReader.onerror = function() {
+        reject(new Error('Failed to read file'));
+      };
+      
+      fileReader.readAsArrayBuffer(file);
+    });
   };
   
   const removeFile = (fileId) => {
