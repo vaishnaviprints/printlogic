@@ -21,13 +21,13 @@ def set_database(database):
 
 SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
 
-def verify_vendor(token: str):
+async def verify_vendor(token: str):
     """Verify vendor token"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         vendor_id = payload.get("sub")
         
-        vendor = db.vendors.find_one({"id": vendor_id})
+        vendor = await db.vendors.find_one({"id": vendor_id})
         if not vendor:
             raise HTTPException(status_code=401, detail="Invalid token")
         
