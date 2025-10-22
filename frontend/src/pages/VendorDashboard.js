@@ -203,6 +203,10 @@ const VendorDashboard = () => {
                 <Home className="w-4 h-4 mr-2" />
                 Home
               </Button>
+              <Button variant="outline" onClick={() => navigate('/vendor/pricing')} size="sm">
+                <DollarSign className="w-4 h-4 mr-2" />
+                My Pricing
+              </Button>
               <Button variant="outline" onClick={handleLogout} size="sm">
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
