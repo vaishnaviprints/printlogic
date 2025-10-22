@@ -70,25 +70,28 @@ const CustomerPrintPortal = () => {
   
   const DELIVERY_CHARGES = 50; // ₹50 for home delivery
 
+  // Simple PDF page counting by reading PDF structure
   const countPdfPages = async (file) => {
-    if (!pdfLib) {
-      console.warn('PDF.js not loaded yet, using fallback');
-      return 1;
-    }
-    
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const fileReader = new FileReader();
       
-      fileReader.onload = async function() {
+      fileReader.onload = function() {
         try {
-          const typedArray = new Uint8Array(this.result);
-          const pdf = await pdfLib.getDocument({ data: typedArray }).promise;
-          const pageCount = pdf.numPages;
-          console.log(`PDF pages counted: ${pageCount}`);
-          resolve(pageCount);
+          const text = this.result;
+          // Count /Type /Page occurrences in PDF structure
+          const matches = text.match(/\/Type\s*\/Page[^s]/g);
+          if (matches) {
+            const pageCount = matches.length;
+            console.log(`PDF ${file.name}: ${pageCount} pages (counted)`);
+            resolve(pageCount);
+          } else {
+            // Fallback: estimate from file size
+            const estimatedPages = Math.max(1, Math.ceil(file.size / 100000));
+            console.log(`PDF ${file.name}: ~${estimatedPages} pages (estimated)`);
+            resolve(estimatedPages);
+          }
         } catch (error) {
           console.error('PDF parsing error:', error);
-          // Fallback to 1 page on error
           resolve(1);
         }
       };
@@ -98,7 +101,7 @@ const CustomerPrintPortal = () => {
         resolve(1);
       };
       
-      fileReader.readAsArrayBuffer(file);
+      fileReader.readAsText(file);
     });
   };
 
@@ -120,7 +123,6 @@ const CustomerPrintPortal = () => {
         if (fileType === 'application/pdf') {
           try {
             pageCount = await countPdfPages(file);
-            console.log(`${file.name}: ${pageCount} pages`);
           } catch (error) {
             console.error('Error counting PDF pages:', error);
             pageCount = 1;
