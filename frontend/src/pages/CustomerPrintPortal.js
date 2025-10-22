@@ -223,6 +223,21 @@ const CustomerPrintPortal = () => {
   };
   
   const updateFileConfig = (fileId, configUpdate) => {
+    // Check if lamination is being selected (changed from 'none' to A4/A3)
+    if (configUpdate.lamination && configUpdate.lamination !== 'none') {
+      const file = uploadedFiles.find(f => f.id === fileId);
+      if (file && file.config.lamination === 'none') {
+        // Show warning before applying
+        setCurrentLaminationFile({ fileId, configUpdate });
+        setShowLaminationWarning(true);
+        return;
+      }
+    }
+    
+    applyFileConfigUpdate(fileId, configUpdate);
+  };
+  
+  const applyFileConfigUpdate = (fileId, configUpdate) => {
     setUploadedFiles(uploadedFiles.map(f => {
       if (f.id === fileId) {
         const newConfig = { ...f.config, ...configUpdate };
@@ -236,6 +251,19 @@ const CustomerPrintPortal = () => {
       }
       return f;
     }));
+  };
+  
+  const handleLaminationConfirm = () => {
+    if (currentLaminationFile) {
+      applyFileConfigUpdate(currentLaminationFile.fileId, currentLaminationFile.configUpdate);
+    }
+    setShowLaminationWarning(false);
+    setCurrentLaminationFile(null);
+  };
+  
+  const handleLaminationCancel = () => {
+    setShowLaminationWarning(false);
+    setCurrentLaminationFile(null);
   };
   
   // Calculate spiral binding cost
