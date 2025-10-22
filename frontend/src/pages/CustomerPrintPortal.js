@@ -512,24 +512,24 @@ const CustomerPrintPortal = () => {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="text-sm text-gray-600">Total Pages in Files</p>
+                    <p className="text-sm text-gray-600">Pages in Files</p>
                     <p className="text-2xl font-bold">{estimate.pages}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Sheets Needed</p>
-                    <p className="text-2xl font-bold">{estimate.sheetsNeeded}</p>
-                    {printConfig.sides === 'double' && (
-                      <p className="text-xs text-green-600 mt-1">Double-sided saves paper!</p>
-                    )}
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Copies</p>
                     <p className="text-2xl font-bold">{estimate.copies}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Physical Sheets</p>
+                    <p className="text-sm text-gray-600">Total Pages (with copies)</p>
+                    <p className="text-2xl font-bold text-indigo-600">{estimate.totalPagesWithCopies}</p>
+                    <p className="text-xs text-gray-500 mt-1">{estimate.pages} × {estimate.copies} copies</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Physical Sheets Needed</p>
                     <p className="text-2xl font-bold">{estimate.totalSheets}</p>
-                    <p className="text-xs text-gray-500 mt-1">{estimate.sheetsNeeded} × {estimate.copies} copies</p>
+                    {printConfig.sides === 'double' && (
+                      <p className="text-xs text-green-600 mt-1">Double-sided saves paper!</p>
+                    )}
                   </div>
                 </div>
 
@@ -539,11 +539,7 @@ const CustomerPrintPortal = () => {
                       <span>Printing Cost ({estimate.sheetsNeeded} sheets × ₹{estimate.pricePerPage} × {estimate.copies} copies)</span>
                       <div className="text-xs text-gray-500 mt-1">
                         Paper: {estimate.paperType} • {printConfig.sides === 'single' ? 'Single-Sided' : 'Double-Sided'}
-                        {printConfig.colorType === 'color' && ` • ${
-                          totalPages < 5 ? 'Below 5 pages rate' : 
-                          totalPages <= 10 ? '5-10 pages rate' : 
-                          '11+ pages rate'
-                        }`}
+                        {estimate.priceTier && ` • ${estimate.priceTier} rate applied (${estimate.totalPagesWithCopies} total pages)`}
                       </div>
                     </div>
                     <span className="font-medium">₹{estimate.printingCost}</span>
