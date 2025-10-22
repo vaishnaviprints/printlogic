@@ -284,7 +284,7 @@ async def update_vendor_profile(
     vendor_id = token["id"]
     
     # Only allow certain fields to be updated by vendor
-    allowed_fields = ["working_hours", "description", "contact_phone", "bank_details"]
+    allowed_fields = ["name", "shop_name", "working_hours", "description", "contact_phone", "bank_details"]
     update_dict = {k: v for k, v in update_data.items() if k in allowed_fields}
     
     if not update_dict:
