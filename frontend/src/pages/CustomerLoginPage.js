@@ -128,6 +128,16 @@ const CustomerLoginPage = () => {
                     data-testid="password-input"
                   />
                 </div>
+                <div className="flex items-center justify-end">
+                  <Button
+                    type="button"
+                    variant="link"
+                    className="text-sm text-indigo-600 hover:text-indigo-700 p-0 h-auto"
+                    onClick={() => navigate('/forgot-password')}
+                  >
+                    Forgot Password?
+                  </Button>
+                </div>
                 <Button type="submit" className="w-full" disabled={loading} data-testid="email-login-btn">
                   {loading ? 'Logging in...' : 'Login'}
                 </Button>
