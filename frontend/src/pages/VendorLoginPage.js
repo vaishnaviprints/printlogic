@@ -74,6 +74,16 @@ const VendorLoginPage = () => {
                 data-testid="vendor-password"
               />
             </div>
+            <div className="flex items-center justify-end">
+              <Button
+                type="button"
+                variant="link"
+                className="text-sm text-indigo-600 hover:text-indigo-700 p-0 h-auto"
+                onClick={() => navigate('/vendor/forgot-password')}
+              >
+                Forgot Password?
+              </Button>
+            </div>
             <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading} data-testid="vendor-login-btn">
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
