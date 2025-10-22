@@ -29,12 +29,12 @@ const AdminDashboard = () => {
   };
 
   const handleTabChange = (value) => {
-    navigate(`/admin/${value}`);
+    navigate(`/system-admin-portal-2025/${value}`);
   };
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/system-admin-portal-2025/login');
   };
 
   return (
