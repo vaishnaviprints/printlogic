@@ -185,7 +185,7 @@ const HomePage = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 mt-0.5" />
-                  <span>Bangalore, Karnataka, India</span>
+                  <span>Hyderabad, Telangana, India</span>
                 </li>
               </ul>
             </div>
