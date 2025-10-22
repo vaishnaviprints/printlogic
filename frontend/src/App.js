@@ -7,6 +7,7 @@ import '@/App.css';
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
 import PricingPage from '@/pages/PricingPage';
+import ContactPage from '@/pages/ContactPage';
 
 // Customer pages
 import CustomerLoginPage from '@/pages/CustomerLoginPage';
@@ -37,6 +38,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/track" element={<OrderTrackingPage />} />
             
             {/* Customer routes */}
             <Route path="/login" element={<CustomerLoginPage />} />
