@@ -28,6 +28,7 @@ import OrderTrackingPage from '@/pages/OrderTrackingPage';
 import CustomerTermsPage from '@/pages/CustomerTermsPage';
 import InStorePage from '@/pages/InStorePage';
 import VendorPricingPage from '@/pages/VendorPricingPage';
+import VendorBankDetailsPage from '@/pages/VendorBankDetailsPage';
 
 // Auth context
 import { AuthProvider } from '@/context/AuthContext';
