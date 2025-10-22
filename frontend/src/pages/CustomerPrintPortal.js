@@ -185,7 +185,13 @@ const CustomerPrintPortal = () => {
       }
     }
     
-    const printingCost = totalPages * pricePerPage * printConfig.copies;
+    // CRITICAL FIX: Double-sided printing uses half the sheets
+    // If 500 pages double-sided → only 250 sheets needed
+    const sheetsNeeded = printConfig.sides === 'double' 
+      ? Math.ceil(totalPages / 2)  // Double side: divide by 2
+      : totalPages;                 // Single side: same as pages
+    
+    const printingCost = sheetsNeeded * pricePerPage * printConfig.copies;
     const bindingCost = BINDING_PRICES[printConfig.binding] || 0;
     const laminationCost = LAMINATION_PRICES[printConfig.lamination] || 0;
     const deliveryCost = deliveryType === 'delivery' ? DELIVERY_CHARGES : 0;
@@ -196,7 +202,8 @@ const CustomerPrintPortal = () => {
     return {
       pages: totalPages,
       copies: printConfig.copies,
-      totalSheets: totalPages * printConfig.copies,
+      sheetsNeeded,  // Actual sheets to be printed
+      totalSheets: sheetsNeeded * printConfig.copies,  // Total physical sheets
       pricePerPage,
       printingCost,
       bindingCost,
