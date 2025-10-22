@@ -131,9 +131,65 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-white/80 backdrop-blur-sm mt-20">
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center text-gray-600">
-          <p>&copy; 2025 Vaishnavi Printers. All rights reserved.</p>
+      <footer className="border-t bg-gray-900 text-white mt-20">
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-4 gap-8">
+            {/* Company Info */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Printer className="w-6 h-6" />
+                <span className="font-bold text-lg">Vaishnavi Printers</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Professional printing services with fast delivery across Bangalore
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><button onClick={() => navigate('/')} className="hover:text-white transition-colors">Home</button></li>
+                <li><button onClick={() => navigate('/about')} className="hover:text-white transition-colors">About Us</button></li>
+                <li><button onClick={() => navigate('/pricing')} className="hover:text-white transition-colors">Pricing</button></li>
+                <li><button onClick={() => navigate('/track')} className="hover:text-white transition-colors">Track Order</button></li>
+              </ul>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="font-semibold mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li>Document Printing</li>
+                <li>Binding & Lamination</li>
+                <li>Color Printing</li>
+                <li>Same Day Delivery</li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-semibold mb-4">Contact Us</h4>
+              <ul className="space-y-3 text-sm text-gray-400">
+                <li className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  <span>+91 80 1234 5678</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  <span>info@vaishnaviprinters.com</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 mt-0.5" />
+                  <span>Bangalore, Karnataka, India</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+            <p>&copy; 2025 Vaishnavi Printers. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
