@@ -12,7 +12,7 @@ import ContactPage from '@/pages/ContactPage';
 // Customer pages
 import CustomerLoginPage from '@/pages/CustomerLoginPage';
 import CustomerRegisterPage from '@/pages/CustomerRegisterPage';
-import CustomerPortal from '@/pages/CustomerPortal';
+import CustomerPrintPortal from '@/pages/CustomerPrintPortal';
 import MyOrdersPage from '@/pages/MyOrdersPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 
