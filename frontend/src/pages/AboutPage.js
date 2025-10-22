@@ -15,7 +15,7 @@ const AboutPage = () => {
         
         <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
           <p className="text-lg text-gray-700 mb-4">
-            Vaishnavi Printers has been serving Bangalore with professional printing services since 2010. 
+            Vaishnavi Printers has been serving Hyderabad with professional printing services since 2010. 
             We specialize in fast, high-quality document printing with both pickup and delivery options.
           </p>
           <p className="text-gray-700">
