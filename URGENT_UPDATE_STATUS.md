@@ -2,7 +2,7 @@
 
 **Date:** January 17, 2025  
 **Status:** Backend Complete, Frontend In Progress  
-**Preview:** https://vaishnavi-print.preview.emergentagent.com
+**Preview:** https://printify-app.preview.emergentagent.com
 
 ---
 
@@ -125,7 +125,7 @@
 
 ### Test 1: Vendor Registration ✅ PASS
 ```bash
-curl -X POST "https://vaishnavi-print.preview.emergentagent.com/api/vendor/register" \
+curl -X POST "https://printify-app.preview.emergentagent.com/api/vendor/register" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test Vendor",
@@ -297,7 +297,7 @@ GET    /api/pricing-audits
 import { io } from 'socket.io-client';
 
 const vendorId = localStorage.getItem('vendor_id');
-const socket = io('https://vaishnavi-print.preview.emergentagent.com', {
+const socket = io('https://printify-app.preview.emergentagent.com', {
   path: '/socket.io',
   auth: { vendor_id: vendorId },
   transports: ['websocket', 'polling']
@@ -347,7 +347,7 @@ socket.emit('mark_read', {});
 **Database:** ✅ Seeded with test data  
 **Socket.IO:** ✅ Real-time working  
 
-**Preview URL:** https://vaishnavi-print.preview.emergentagent.com
+**Preview URL:** https://printify-app.preview.emergentagent.com
 
 ---
 

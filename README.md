@@ -74,8 +74,8 @@ sudo supervisorctl restart frontend
 
 ### 3. Access the Application
 
-- **Customer Portal**: https://vaishnavi-print.preview.emergentagent.com/print
-- **Admin Dashboard**: https://vaishnavi-print.preview.emergentagent.com/admin/login
+- **Customer Portal**: https://printify-app.preview.emergentagent.com/print
+- **Admin Dashboard**: https://printify-app.preview.emergentagent.com/admin/login
   - Email: `admin@vaishnavi.com`
   - Password: `admin123`
 
