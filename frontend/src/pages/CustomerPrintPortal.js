@@ -41,6 +41,9 @@ const CustomerPrintPortal = () => {
     phone: ''
   });
   
+  // Payment method
+  const [paymentMethod, setPaymentMethod] = useState('cash'); // cash or online
+  
   // Pricing
   const [estimate, setEstimate] = useState(null);
   
