@@ -16,23 +16,6 @@ const CustomerPrintPortal = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const [pdfLib, setPdfLib] = useState(null);
-  
-  // Load PDF.js dynamically
-  useEffect(() => {
-    const loadPdfJs = async () => {
-      try {
-        const pdfjsLib = await import('pdfjs-dist');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-        setPdfLib(pdfjsLib);
-        console.log('PDF.js loaded successfully');
-      } catch (error) {
-        console.error('Failed to load PDF.js:', error);
-        toast.error('PDF processing library failed to load');
-      }
-    };
-    loadPdfJs();
-  }, []);
   
   // Files
   const [uploadedFiles, setUploadedFiles] = useState([]);
