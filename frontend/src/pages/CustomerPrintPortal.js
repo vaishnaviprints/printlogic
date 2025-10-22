@@ -168,8 +168,22 @@ const CustomerPrintPortal = () => {
   };
   
   const calculateEstimate = () => {
-    const priceKey = `${printConfig.paperSize}_${printConfig.colorType}_${printConfig.sides}`;
-    const pricePerPage = PAPER_PRICES[priceKey] || 2;
+    let pricePerPage;
+    
+    // Calculate price based on color type and total pages
+    if (printConfig.colorType === 'black_white') {
+      // B/W: Simple flat rate
+      pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.bw_single : PAPER_PRICES.bw_double;
+    } else {
+      // Color: Tiered pricing based on total pages
+      if (totalPages < 5) {
+        pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_below_5_single : PAPER_PRICES.color_below_5_double;
+      } else if (totalPages <= 10) {
+        pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_5_to_10_single : PAPER_PRICES.color_5_to_10_double;
+      } else {
+        pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_11_plus_single : PAPER_PRICES.color_11_plus_double;
+      }
+    }
     
     const printingCost = totalPages * pricePerPage * printConfig.copies;
     const bindingCost = BINDING_PRICES[printConfig.binding] || 0;
@@ -189,7 +203,8 @@ const CustomerPrintPortal = () => {
       laminationCost,
       deliveryCost,
       subtotal,
-      total
+      total,
+      paperType: printConfig.colorType === 'black_white' ? '70 GSM' : '100 GSM'
     };
   };
   
