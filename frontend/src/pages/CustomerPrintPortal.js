@@ -62,6 +62,14 @@ const CustomerPrintPortal = () => {
     'above_10_double': 35
   };
   
+  // A3 B/W Pricing
+  const A3_BW_PRICES = {
+    'below_10_single': 8,
+    'below_10_double': 12,
+    'above_10_single': 6,
+    'above_10_double': 10
+  };
+  
   const DELIVERY_CHARGES = 50;
 
   // Generate QR Code for in-store ordering
