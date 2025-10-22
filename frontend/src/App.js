@@ -47,7 +47,7 @@ function App() {
             <Route path="/login" element={<CustomerLoginPage />} />
             <Route path="/register" element={<CustomerRegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/print" element={<CustomerPortal />} />
+            <Route path="/print" element={<CustomerPrintPortal />} />
             <Route path="/my-orders" element={<MyOrdersPage />} />
             <Route path="/track/:orderId" element={<OrderTrackingPage />} />
             
