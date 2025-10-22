@@ -12,6 +12,8 @@ import VendorsPage from './admin/VendorsPage';
 import SettingsPage from './admin/SettingsPage';
 import ReportsPage from './admin/ReportsPage';
 import AuditLogsPage from './admin/AuditLogsPage';
+import ComplaintsPage from './admin/ComplaintsPage';
+import AssistantAdminPage from './admin/AssistantAdminPage';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
