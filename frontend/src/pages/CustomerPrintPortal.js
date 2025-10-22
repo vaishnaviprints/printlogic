@@ -705,10 +705,26 @@ const CustomerPrintPortal = () => {
                           </div>
 
                           {/* File Estimate */}
-                          <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                            <p className="text-sm font-medium text-indigo-900">
-                              Estimate for this file: ₹{calculateFileEstimate(fileObj).total}
-                            </p>
+                          <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200 space-y-2">
+                            <div className="flex justify-between items-center">
+                              <p className="text-sm font-medium text-indigo-900">
+                                Estimate for this file:
+                              </p>
+                              <p className="text-lg font-bold text-indigo-600">
+                                ₹{calculateFileEstimate(fileObj).total.toLocaleString()}
+                              </p>
+                            </div>
+                            {fileObj.config.lamination !== 'none' && (
+                              <div className="text-xs bg-amber-100 text-amber-800 p-2 rounded border border-amber-300">
+                                <p className="font-semibold">⚠️ Lamination Cost Included:</p>
+                                <p>
+                                  {fileObj.config.sides === 'double' 
+                                    ? `${Math.ceil(fileObj.config.selectedPages / 2)} sheets`
+                                    : `${fileObj.config.selectedPages} pages`
+                                  } × ₹{fileObj.config.lamination === 'A4' ? '40' : '60'} × {fileObj.config.copies} copies = ₹{calculateFileEstimate(fileObj).laminationCost.toLocaleString()}
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       )}
