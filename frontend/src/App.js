@@ -27,6 +27,7 @@ import AdminDashboard from '@/pages/AdminDashboard';
 import OrderTrackingPage from '@/pages/OrderTrackingPage';
 import CustomerTermsPage from '@/pages/CustomerTermsPage';
 import InStorePage from '@/pages/InStorePage';
+import VendorPricingPage from '@/pages/VendorPricingPage';
 
 // Auth context
 import { AuthProvider } from '@/context/AuthContext';
