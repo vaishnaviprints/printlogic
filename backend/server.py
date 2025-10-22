@@ -46,6 +46,11 @@ from vendor_auth import (
 )
 from socketio_manager import sio, notify_vendor
 
+# Enhanced modules
+import admin_enhanced
+import vendor_enhanced
+import instore_orders
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
