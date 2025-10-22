@@ -1645,6 +1645,7 @@ vendor_enhanced.set_database(db)
 instore_orders.set_database(db)
 google_oauth.set_database(db)
 pricing_manager.set_database(db)
+commission_manager.set_database(db)
 
 # Include enhanced routers
 app.include_router(admin_enhanced.router)
