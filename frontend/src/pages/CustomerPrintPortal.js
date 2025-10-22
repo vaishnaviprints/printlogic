@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,17 +9,30 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Printer, Upload, FileText, Image as ImageIcon, File, X, Eye, MapPin, Truck, Calculator } from 'lucide-react';
 import axios from 'axios';
-import * as pdfjsLib from 'pdfjs-dist';
-
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const CustomerPrintPortal = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Upload, 2: Configure, 3: Estimate
+  const [step, setStep] = useState(1);
+  const [pdfLib, setPdfLib] = useState(null);
+  
+  // Load PDF.js dynamically
+  useEffect(() => {
+    const loadPdfJs = async () => {
+      try {
+        const pdfjsLib = await import('pdfjs-dist');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+        setPdfLib(pdfjsLib);
+        console.log('PDF.js loaded successfully');
+      } catch (error) {
+        console.error('Failed to load PDF.js:', error);
+        toast.error('PDF processing library failed to load');
+      }
+    };
+    loadPdfJs();
+  }, []);
   
   // Files
   const [uploadedFiles, setUploadedFiles] = useState([]);
