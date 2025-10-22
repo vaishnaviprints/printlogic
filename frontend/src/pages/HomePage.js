@@ -1,32 +1,64 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Printer, Clock, Shield, Zap } from 'lucide-react';
+import { Printer, Clock, Shield, Zap, MapPin, Phone, Mail } from 'lucide-react';
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
+      {/* Header with Full Navigation */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <Printer className="w-6 h-6 text-white" />
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
+              <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <Printer className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Vaishnavi Printers</h1>
+                <p className="text-xs text-gray-500">Quality Printing, Fast Delivery</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Vaishnavi Printers</h1>
-              <p className="text-xs text-gray-500">Quality Printing, Fast Delivery</p>
+            
+            {/* Navigation Links */}
+            <nav className="hidden md:flex items-center gap-6">
+              <button onClick={() => navigate('/')} className="text-gray-700 hover:text-indigo-600 font-medium transition-colors">
+                Home
+              </button>
+              <button onClick={() => navigate('/about')} className="text-gray-700 hover:text-indigo-600 font-medium transition-colors">
+                About Us
+              </button>
+              <button onClick={() => navigate('/pricing')} className="text-gray-700 hover:text-indigo-600 font-medium transition-colors">
+                Pricing
+              </button>
+              <button onClick={() => navigate('/track')} className="text-gray-700 hover:text-indigo-600 font-medium transition-colors">
+                Track Order
+              </button>
+              <button onClick={() => navigate('/contact')} className="text-gray-700 hover:text-indigo-600 font-medium transition-colors">
+                Contact
+              </button>
+            </nav>
+
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/login')}
+                data-testid="customer-login-btn"
+              >
+                Login
+              </Button>
+              <Button
+                className="bg-indigo-600 hover:bg-indigo-700"
+                onClick={() => navigate('/register')}
+                data-testid="customer-register-btn"
+              >
+                Sign Up
+              </Button>
             </div>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/admin/login')}
-            data-testid="admin-login-btn"
-          >
-            Admin Login
-          </Button>
         </div>
       </header>
 
