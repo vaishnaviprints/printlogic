@@ -25,6 +25,7 @@ import VendorForgotPasswordPage from '@/pages/VendorForgotPasswordPage';
 import AdminLoginPage from '@/pages/AdminLoginPage';
 import AdminDashboard from '@/pages/AdminDashboard';
 import OrderTrackingPage from '@/pages/OrderTrackingPage';
+import CustomerTermsPage from '@/pages/CustomerTermsPage';
 
 // Auth context
 import { AuthProvider } from '@/context/AuthContext';
