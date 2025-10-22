@@ -45,14 +45,17 @@ const CustomerPrintPortal = () => {
   const [estimate, setEstimate] = useState(null);
   
   const PAPER_PRICES = {
-    'A4_black_white_single': 2,
-    'A4_black_white_double': 3,
-    'A4_color_single': 10,
-    'A4_color_double': 15,
-    'A3_black_white_single': 5,
-    'A3_black_white_double': 8,
-    'A3_color_single': 20,
-    'A3_color_double': 30
+    // Black & White (70 GSM paper) - flat rates
+    'bw_single': 3,
+    'bw_double': 4,
+    
+    // Color (100 GSM paper) - tiered pricing based on total pages
+    'color_below_5_single': 15,
+    'color_below_5_double': 25,
+    'color_5_to_10_single': 12,
+    'color_5_to_10_double': 20,
+    'color_11_plus_single': 10,
+    'color_11_plus_double': 20
   };
   
   const BINDING_PRICES = {
