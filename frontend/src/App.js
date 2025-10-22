@@ -46,12 +46,14 @@ function App() {
             {/* Customer routes */}
             <Route path="/login" element={<CustomerLoginPage />} />
             <Route path="/register" element={<CustomerRegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/print" element={<CustomerPortal />} />
             <Route path="/my-orders" element={<MyOrdersPage />} />
             <Route path="/track/:orderId" element={<OrderTrackingPage />} />
             
             {/* Vendor routes */}
             <Route path="/vendor/login" element={<VendorLoginPage />} />
+            <Route path="/vendor/forgot-password" element={<VendorForgotPasswordPage />} />
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             
             {/* Admin routes - Hidden URL for security */}
