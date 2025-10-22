@@ -94,15 +94,15 @@ const OrderSuccessPage = () => {
                     <div className="text-sm text-gray-600 mt-2 space-y-2">
                       <div>
                         <p className="font-medium">Vaishnavi Central</p>
-                        <p>Koramangala, Bangalore - 560034</p>
+                        <p>2-49, Taranagar, Serilingampally, Hyderabad - 500019</p>
                       </div>
                       <div>
-                        <p className="font-medium">Vaishnavi North</p>
-                        <p>Yelahanka, Bangalore - 560064</p>
+                        <p className="font-medium">Kukatpally Branch</p>
+                        <p>Kukatpally, Hyderabad - 500072</p>
                       </div>
                       <div>
-                        <p className="font-medium">Vaishnavi South</p>
-                        <p>JP Nagar, Bangalore - 560078</p>
+                        <p className="font-medium">Madhapur Branch</p>
+                        <p>Madhapur, Hyderabad - 500081</p>
                       </div>
                     </div>
                   </div>
