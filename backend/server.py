@@ -52,6 +52,7 @@ import vendor_enhanced
 import instore_orders
 import google_oauth
 import pricing_manager
+import commission_manager
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
