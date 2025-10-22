@@ -6,9 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { Printer, Upload, FileText, Image as ImageIcon, File, X, Eye, MapPin, Truck, Calculator } from 'lucide-react';
+import { Printer, Upload, FileText, Image as ImageIcon, File, X, Eye, MapPin, Truck, Calculator, Settings, DollarSign } from 'lucide-react';
 import axios from 'axios';
+import QRCode from 'qrcode';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -17,20 +19,8 @@ const CustomerPrintPortal = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   
-  // Files
+  // Files with individual configurations
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-  
-  // Print configuration
-  const [printConfig, setPrintConfig] = useState({
-    paperType: 'A4',
-    paperSize: 'A4',
-    colorType: 'black_white',
-    sides: 'single',
-    binding: 'none',
-    lamination: 'none',
-    copies: 1
-  });
   
   // Delivery
   const [deliveryType, setDeliveryType] = useState('pickup'); // pickup or delivery
