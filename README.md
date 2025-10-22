@@ -74,8 +74,8 @@ sudo supervisorctl restart frontend
 
 ### 3. Access the Application
 
-- **Customer Portal**: https://printshop-flow.preview.emergentagent.com/print
-- **Admin Dashboard**: https://printshop-flow.preview.emergentagent.com/admin/login
+- **Customer Portal**: https://vaishnavi-print.preview.emergentagent.com/print
+- **Admin Dashboard**: https://vaishnavi-print.preview.emergentagent.com/admin/login
   - Email: `admin@vaishnavi.com`
   - Password: `admin123`
 

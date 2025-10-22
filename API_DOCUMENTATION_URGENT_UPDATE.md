@@ -1,6 +1,6 @@
 # API Documentation - Urgent Update Features
 
-**Base URL:** `https://printshop-flow.preview.emergentagent.com/api`
+**Base URL:** `https://vaishnavi-print.preview.emergentagent.com/api`
 
 ---
 
@@ -748,7 +748,7 @@ Authorization: Bearer {vendor_token}
 ```javascript
 import { io } from 'socket.io-client';
 
-const socket = io('https://printshop-flow.preview.emergentagent.com', {
+const socket = io('https://vaishnavi-print.preview.emergentagent.com', {
   path: '/socket.io',
   auth: {
     vendor_id: 'vendor_central'  // from logged-in vendor
@@ -933,12 +933,12 @@ curl -X PATCH ".../api/orders/order_123/status" \
 ### Admin Edit Price
 ```bash
 # Login
-ADMIN_TOKEN=$(curl -s -X POST "https://printshop-flow.preview.emergentagent.com/api/auth/login" \
+ADMIN_TOKEN=$(curl -s -X POST "https://vaishnavi-print.preview.emergentagent.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@vaishnavi.com","password":"admin123"}' | jq -r '.access_token')
 
 # Update price
-curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/admin/price-rules/paper-types/a4_70gsm" \
+curl -X PUT "https://vaishnavi-print.preview.emergentagent.com/api/admin/price-rules/paper-types/a4_70gsm" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -F "perPage_bw=0.65" \
   -F "perPage_color=3.50" \
@@ -948,12 +948,12 @@ curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/admin/price-ru
 ### Vendor Accept Order
 ```bash
 # Login
-VENDOR_TOKEN=$(curl -s -X POST "https://printshop-flow.preview.emergentagent.com/api/auth/vendor/login" \
+VENDOR_TOKEN=$(curl -s -X POST "https://vaishnavi-print.preview.emergentagent.com/api/auth/vendor/login" \
   -F "email=central@vaishnavi.com" \
   -F "password=vendor123" | jq -r '.access_token')
 
 # Accept order
-curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/vendor/orders/order_abc123/action" \
+curl -X PUT "https://vaishnavi-print.preview.emergentagent.com/api/vendor/orders/order_abc123/action" \
   -H "Authorization: Bearer $VENDOR_TOKEN" \
   -F "action=accept" \
   -F "note=Accepted, will start immediately"
@@ -961,7 +961,7 @@ curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/vendor/orders/
 
 ### Toggle Store
 ```bash
-curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/vendor/store" \
+curl -X PUT "https://vaishnavi-print.preview.emergentagent.com/api/vendor/store" \
   -H "Authorization: Bearer $VENDOR_TOKEN" \
   -F "store_open=false"
 ```
@@ -971,7 +971,7 @@ curl -X PUT "https://printshop-flow.preview.emergentagent.com/api/vendor/store" 
 ## Summary
 
 All endpoints are deployed and functional on:
-**https://printshop-flow.preview.emergentagent.com/api**
+**https://vaishnavi-print.preview.emergentagent.com/api**
 
 Key features:
 - ✅ Admin pricing with audit trail
