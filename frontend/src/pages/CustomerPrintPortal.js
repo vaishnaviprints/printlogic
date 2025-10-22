@@ -170,22 +170,26 @@ const CustomerPrintPortal = () => {
   const calculateEstimate = () => {
     let pricePerPage;
     
-    // Calculate price based on color type and total pages
+    // CRITICAL FIX: For color pricing tiers, consider total pages including copies
+    // Example: 1 page × 6 copies = 6 pages total → should use 5-10 pages rate
+    const totalPagesWithCopies = totalPages * printConfig.copies;
+    
+    // Calculate price based on color type and total pages (including copies)
     if (printConfig.colorType === 'black_white') {
       // B/W: Simple flat rate
       pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.bw_single : PAPER_PRICES.bw_double;
     } else {
-      // Color: Tiered pricing based on total pages
-      if (totalPages < 5) {
+      // Color: Tiered pricing based on total pages × copies
+      if (totalPagesWithCopies < 5) {
         pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_below_5_single : PAPER_PRICES.color_below_5_double;
-      } else if (totalPages <= 10) {
+      } else if (totalPagesWithCopies <= 10) {
         pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_5_to_10_single : PAPER_PRICES.color_5_to_10_double;
       } else {
         pricePerPage = printConfig.sides === 'single' ? PAPER_PRICES.color_11_plus_single : PAPER_PRICES.color_11_plus_double;
       }
     }
     
-    // CRITICAL FIX: Double-sided printing uses half the sheets
+    // Double-sided printing uses half the sheets
     // If 500 pages double-sided → only 250 sheets needed
     const sheetsNeeded = printConfig.sides === 'double' 
       ? Math.ceil(totalPages / 2)  // Double side: divide by 2
@@ -202,7 +206,8 @@ const CustomerPrintPortal = () => {
     return {
       pages: totalPages,
       copies: printConfig.copies,
-      sheetsNeeded,  // Actual sheets to be printed
+      totalPagesWithCopies,  // Show total including copies for transparency
+      sheetsNeeded,  // Actual sheets to be printed (per copy)
       totalSheets: sheetsNeeded * printConfig.copies,  // Total physical sheets
       pricePerPage,
       printingCost,
@@ -211,7 +216,12 @@ const CustomerPrintPortal = () => {
       deliveryCost,
       subtotal,
       total,
-      paperType: printConfig.colorType === 'black_white' ? '70 GSM' : '100 GSM'
+      paperType: printConfig.colorType === 'black_white' ? '70 GSM' : '100 GSM',
+      priceTier: printConfig.colorType === 'color' ? (
+        totalPagesWithCopies < 5 ? 'Below 5 pages' : 
+        totalPagesWithCopies <= 10 ? '5-10 pages' : 
+        '11+ pages'
+      ) : null
     };
   };
   
