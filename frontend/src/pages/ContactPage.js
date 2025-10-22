@@ -138,8 +138,10 @@ const ContactPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg font-medium">+91 80 1234 5678</p>
-                <p className="text-sm text-gray-600">Monday - Saturday, 9 AM - 9 PM</p>
+                <p className="text-lg font-medium">+91 96186 67700</p>
+                <p className="text-sm text-gray-600 mt-2">Vendor Registration / Vendor Issues</p>
+                <p className="text-sm text-gray-600">Customer Care Number</p>
+                <p className="text-sm text-gray-600 mt-2">Monday - Saturday, 9 AM - 9 PM</p>
               </CardContent>
             </Card>
 
