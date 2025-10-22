@@ -26,6 +26,7 @@ import AdminLoginPage from '@/pages/AdminLoginPage';
 import AdminDashboard from '@/pages/AdminDashboard';
 import OrderTrackingPage from '@/pages/OrderTrackingPage';
 import CustomerTermsPage from '@/pages/CustomerTermsPage';
+import InStorePage from '@/pages/InStorePage';
 
 // Auth context
 import { AuthProvider } from '@/context/AuthContext';
