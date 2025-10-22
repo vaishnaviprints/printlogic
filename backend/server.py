@@ -1284,6 +1284,89 @@ async def update_order_status(
     
     return {"status": "updated"}
 
+# ==================== ORDER TRACKING ====================
+
+@api_router.post("/orders/track")
+async def track_order_public(order_number: str = Form(...), mobile: str = Form(...)):
+    """Public order tracking with order number and mobile"""
+    try:
+        # Find order by order number and customer phone
+        order_doc = await db.orders.find_one({
+            "id": order_number,
+            "customer_phone": mobile
+        }, {"_id": 0})
+        
+        if not order_doc:
+            raise HTTPException(status_code=404, detail="Order not found with provided details")
+        
+        # Convert datetime strings if needed
+        if isinstance(order_doc.get('created_at'), str):
+            order_doc['created_at'] = datetime.fromisoformat(order_doc['created_at'])
+        if isinstance(order_doc.get('updated_at'), str):
+            order_doc['updated_at'] = datetime.fromisoformat(order_doc['updated_at'])
+        
+        # Get vendor info if assigned
+        if order_doc.get('vendor_id'):
+            vendor = await db.vendors.find_one({"id": order_doc['vendor_id']}, {"_id": 0})
+            if vendor:
+                order_doc['vendor_name'] = vendor.get('name')
+                order_doc['vendor_location'] = vendor.get('location', {}).get('address')
+        
+        return order_doc
+        
+    except Exception as e:
+        logger.error(f"Order tracking error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to track order")
+
+@api_router.get("/orders/my-orders")
+async def get_my_orders(current_user: dict = Depends(get_current_user)):
+    """Get orders for authenticated user (customer or vendor)"""
+    try:
+        if current_user.get('type') == 'customer':
+            # Get customer orders
+            customer = await db.customers.find_one({"id": current_user['sub']})
+            if not customer:
+                raise HTTPException(status_code=404, detail="Customer not found")
+            
+            orders = await db.orders.find(
+                {"customer_email": customer['email']},
+                {"_id": 0}
+            ).sort("created_at", -1).to_list(100)
+            
+        elif current_user.get('type') == 'vendor':
+            # Get vendor orders
+            vendor = await db.vendors.find_one({"id": current_user['sub']})
+            if not vendor:
+                raise HTTPException(status_code=404, detail="Vendor not found")
+            
+            orders = await db.orders.find(
+                {"vendor_id": vendor['id']},
+                {"_id": 0}
+            ).sort("created_at", -1).to_list(100)
+            
+        else:
+            raise HTTPException(status_code=403, detail="Invalid user type")
+        
+        # Process orders
+        for order in orders:
+            if isinstance(order.get('created_at'), str):
+                order['created_at'] = datetime.fromisoformat(order['created_at'])
+            if isinstance(order.get('updated_at'), str):
+                order['updated_at'] = datetime.fromisoformat(order['updated_at'])
+            
+            # Add vendor info for customer orders
+            if current_user.get('type') == 'customer' and order.get('vendor_id'):
+                vendor = await db.vendors.find_one({"id": order['vendor_id']}, {"_id": 0})
+                if vendor:
+                    order['vendor_name'] = vendor.get('name')
+                    order['vendor_location'] = vendor.get('location', {}).get('address')
+        
+        return orders
+        
+    except Exception as e:
+        logger.error(f"Get my orders error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch orders")
+
 # ==================== PAYMENT GATEWAY ADMIN ====================
 
 @api_router.get("/admin/payment-gateway/config")
