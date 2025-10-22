@@ -722,6 +722,7 @@ const VendorsPage = () => {
             <Tabs value={viewTab} onValueChange={setViewTab}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="banking">Banking</TabsTrigger>
                 <TabsTrigger value="sales">Sales History</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
               </TabsList>
