@@ -52,16 +52,19 @@ function App() {
             <Route path="/vendor/login" element={<VendorLoginPage />} />
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             
-            {/* Admin routes */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
+            {/* Admin routes - Hidden URL for security */}
+            <Route path="/system-admin-portal-2025/login" element={<AdminLoginPage />} />
             <Route
-              path="/admin/*"
+              path="/system-admin-portal-2025/*"
               element={
                 <ProtectedRoute>
                   <AdminDashboard />
                 </ProtectedRoute>
               }
             />
+            {/* Backward compatibility - redirect old admin URLs */}
+            <Route path="/admin/login" element={<Navigate to="/system-admin-portal-2025/login" replace />} />
+            <Route path="/admin/*" element={<Navigate to="/system-admin-portal-2025/dashboard" replace />} />
             
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
