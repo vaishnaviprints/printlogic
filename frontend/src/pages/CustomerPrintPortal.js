@@ -321,14 +321,24 @@ const CustomerPrintPortal = () => {
       printingCost = sheetsNeeded * pricePerPage * copies;
       
     } else if (config.paperSize === 'A3') {
-      // A3 is color only
+      // A3 pricing (Color or B/W)
       const totalCopies = copies;
       let pricePerPage;
       
-      if (totalCopies <= 10) {
-        pricePerPage = config.sides === 'single' ? A3_COLOR_PRICES.below_10_single : A3_COLOR_PRICES.below_10_double;
+      if (config.colorType === 'black_white') {
+        // A3 B/W
+        if (totalCopies <= 10) {
+          pricePerPage = config.sides === 'single' ? A3_BW_PRICES.below_10_single : A3_BW_PRICES.below_10_double;
+        } else {
+          pricePerPage = config.sides === 'single' ? A3_BW_PRICES.above_10_single : A3_BW_PRICES.above_10_double;
+        }
       } else {
-        pricePerPage = config.sides === 'single' ? A3_COLOR_PRICES.above_10_single : A3_COLOR_PRICES.above_10_double;
+        // A3 Color
+        if (totalCopies <= 10) {
+          pricePerPage = config.sides === 'single' ? A3_COLOR_PRICES.below_10_single : A3_COLOR_PRICES.below_10_double;
+        } else {
+          pricePerPage = config.sides === 'single' ? A3_COLOR_PRICES.above_10_single : A3_COLOR_PRICES.above_10_double;
+        }
       }
       
       const sheetsNeeded = config.sides === 'double' ? Math.ceil(selectedPages / 2) : selectedPages;
