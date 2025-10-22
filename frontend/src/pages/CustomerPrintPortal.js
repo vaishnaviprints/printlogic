@@ -912,6 +912,62 @@ const CustomerPrintPortal = () => {
           </div>
         )}
       </div>
+
+      {/* Lamination Warning Dialog */}
+      <AlertDialog open={showLaminationWarning} onOpenChange={setShowLaminationWarning}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-orange-600">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Important: Lamination Pricing
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3 text-base">
+              <p className="font-semibold text-gray-900">
+                Lamination is charged PER PAGE/SHEET - typically used for certificates and important documents.
+              </p>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+                <p className="font-medium text-blue-900">Pricing:</p>
+                <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                  <li><strong>A4:</strong> ₹40 per sheet</li>
+                  <li><strong>A3:</strong> ₹60 per sheet</li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2">
+                <p className="font-medium text-amber-900">Calculation:</p>
+                <ul className="text-sm text-amber-800 space-y-1 list-disc list-inside">
+                  <li><strong>Single Side:</strong> Total pages × Rate × Copies</li>
+                  <li><strong>Double Side:</strong> (Total pages ÷ 2) × Rate × Copies</li>
+                </ul>
+              </div>
+
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-800">
+                  <strong>Example:</strong> 100 pages, single side, A4 = 100 × ₹40 = ₹4,000
+                </p>
+                <p className="text-sm text-red-800 mt-1">
+                  <strong>Note:</strong> Lamination can be expensive for multiple pages!
+                </p>
+              </div>
+
+              <p className="text-sm text-gray-600 italic">
+                Only select lamination if you need professional certificate-quality protection for each page.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleLaminationCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleLaminationConfirm} className="bg-indigo-600 hover:bg-indigo-700">
+              Yes, Add Lamination
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
