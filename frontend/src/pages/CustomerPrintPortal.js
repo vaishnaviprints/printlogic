@@ -165,7 +165,7 @@ const CustomerPrintPortal = () => {
             selectedPages: pageCount, // Calculated from page ranges
             paperSize: 'A4',
             colorType: colorType,
-            autoDetectColor: true,
+            autoDetectColor: false, // Default: unchecked
             sides: 'single',
             copies: 1,
             binding: 'none',
