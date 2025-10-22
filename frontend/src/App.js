@@ -64,6 +64,7 @@ function App() {
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/pricing" element={<VendorPricingPage />} />
             <Route path="/vendor/bank-details" element={<VendorBankDetailsPage />} />
+            <Route path="/vendor/profile" element={<VendorBusinessProfilePage />} />
             
             {/* Admin routes - Hidden URL for security */}
             <Route path="/system-admin-portal-2025/login" element={<AdminLoginPage />} />
