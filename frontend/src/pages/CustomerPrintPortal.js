@@ -303,12 +303,20 @@ const CustomerPrintPortal = () => {
       bindingCost = calculateSpiralBindingCost(totalPagesForBinding, config.sides === 'double');
     }
     
-    // Lamination cost
+    // Lamination cost - PER PAGE/SHEET (for certificates)
     let laminationCost = 0;
     if (config.lamination === 'A4') {
-      laminationCost = 40;
+      // A4: ₹40 per sheet
+      const sheetsForLamination = config.sides === 'double' 
+        ? Math.ceil(selectedPages / 2)  // Double side: half the sheets
+        : selectedPages;                 // Single side: all pages
+      laminationCost = sheetsForLamination * 40 * copies;
     } else if (config.lamination === 'A3') {
-      laminationCost = 60;
+      // A3: ₹60 per sheet
+      const sheetsForLamination = config.sides === 'double' 
+        ? Math.ceil(selectedPages / 2)
+        : selectedPages;
+      laminationCost = sheetsForLamination * 60 * copies;
     }
     
     return {
