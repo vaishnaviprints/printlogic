@@ -87,8 +87,42 @@ const CustomerPrintPortal = () => {
   
   const DELIVERY_CHARGES = 50; // ₹50 for home delivery
 
+  const countPdfPages = async (file) => {
+    if (!pdfLib) {
+      console.warn('PDF.js not loaded yet, using fallback');
+      return 1;
+    }
+    
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      
+      fileReader.onload = async function() {
+        try {
+          const typedArray = new Uint8Array(this.result);
+          const pdf = await pdfLib.getDocument({ data: typedArray }).promise;
+          const pageCount = pdf.numPages;
+          console.log(`PDF pages counted: ${pageCount}`);
+          resolve(pageCount);
+        } catch (error) {
+          console.error('PDF parsing error:', error);
+          // Fallback to 1 page on error
+          resolve(1);
+        }
+      };
+      
+      fileReader.onerror = function() {
+        console.error('File reading error');
+        resolve(1);
+      };
+      
+      fileReader.readAsArrayBuffer(file);
+    });
+  };
+
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
     setLoading(true);
     
     try {
@@ -101,19 +135,17 @@ const CustomerPrintPortal = () => {
         
         // Calculate pages based on file type
         if (fileType === 'application/pdf') {
-          // PROPER PDF page counting using PDF.js
           try {
             pageCount = await countPdfPages(file);
-            console.log(`PDF ${file.name}: ${pageCount} pages`);
+            console.log(`${file.name}: ${pageCount} pages`);
           } catch (error) {
             console.error('Error counting PDF pages:', error);
-            toast.error(`Failed to count pages in ${file.name}`);
             pageCount = 1;
           }
         } else if (fileType.startsWith('image/')) {
-          pageCount = 1; // Each image = 1 page
+          pageCount = 1;
         } else {
-          pageCount = 1; // Other files default to 1 page
+          pageCount = 1;
         }
         
         newFiles.push({
@@ -138,30 +170,6 @@ const CustomerPrintPortal = () => {
     } finally {
       setLoading(false);
     }
-  };
-  
-  const countPdfPages = async (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      
-      fileReader.onload = async function() {
-        try {
-          const typedArray = new Uint8Array(this.result);
-          const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
-          const pageCount = pdf.numPages;
-          resolve(pageCount);
-        } catch (error) {
-          console.error('PDF parsing error:', error);
-          reject(error);
-        }
-      };
-      
-      fileReader.onerror = function() {
-        reject(new Error('Failed to read file'));
-      };
-      
-      fileReader.readAsArrayBuffer(file);
-    });
   };
   
   const removeFile = (fileId) => {
