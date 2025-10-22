@@ -1372,7 +1372,6 @@ async def get_my_orders(current_user: dict = Depends(get_current_user)):
 @api_router.get("/admin/payment-gateway/config")
 async def get_payment_gateway_config(current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))):
     """Get payment gateway configuration (admin only)"""
-    import json
     config_path = Path(__file__).parent / "config" / "payment_gateways.json"
     with open(config_path, 'r') as f:
         config = json.load(f)
@@ -1393,7 +1392,6 @@ async def update_payment_gateway_config(
     current_user: dict = Depends(require_role([UserRole.SUPER_ADMIN]))
 ):
     """Update payment gateway settings"""
-    import json
     config_path = Path(__file__).parent / "config" / "payment_gateways.json"
     
     with open(config_path, 'r') as f:
