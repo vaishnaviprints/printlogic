@@ -1643,12 +1643,14 @@ admin_enhanced.set_database(db)
 vendor_enhanced.set_database(db)
 instore_orders.set_database(db)
 google_oauth.set_database(db)
+pricing_manager.set_database(db)
 
 # Include enhanced routers
 app.include_router(admin_enhanced.router)
 app.include_router(vendor_enhanced.router)
 app.include_router(instore_orders.router)
 app.include_router(google_oauth.router)
+app.include_router(pricing_manager.router)
 
 app.add_middleware(
     CORSMiddleware,
