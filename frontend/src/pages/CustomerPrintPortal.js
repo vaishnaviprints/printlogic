@@ -255,29 +255,41 @@ const CustomerPrintPortal = () => {
       const formData = new FormData();
       
       // Add files
-      uploadedFiles.forEach((fileObj, index) => {
+      uploadedFiles.forEach((fileObj) => {
         formData.append(`files`, fileObj.file);
       });
       
       // Add configuration
-      formData.append('config', JSON.stringify({
+      const orderData = {
         ...printConfig,
         deliveryType,
         deliveryAddress: deliveryType === 'delivery' ? deliveryAddress : null,
+        paymentMethod,
         totalPages,
-        estimate
-      }));
+        estimate,
+        paymentStatus: paymentMethod === 'cash' ? 'pending' : 'paid'
+      };
+      
+      formData.append('config', JSON.stringify(orderData));
       
       const token = localStorage.getItem('auth_token');
       const response = await axios.post(`${API}/orders/create`, formData, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': token ? `Bearer ${token}` : undefined,
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      toast.success('Order created successfully!');
-      navigate(`/track/${response.data.order_id}`);
+      if (paymentMethod === 'cash') {
+        // Cash payment - show order ID and instructions
+        toast.success('Order placed successfully!');
+        navigate(`/order-success/${response.data.order_id}?payment=cash`);
+      } else {
+        // Online payment - redirect to payment gateway
+        toast.success('Redirecting to payment...');
+        // TODO: Integrate Razorpay/Stripe here
+        navigate(`/order-success/${response.data.order_id}?payment=online`);
+      }
     } catch (error) {
       console.error('Order creation failed:', error);
       toast.error(error.response?.data?.detail || 'Failed to create order');
