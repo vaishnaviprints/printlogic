@@ -26,7 +26,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4" />
-                MG Road, Bangalore
+                2-49, Taranagar, Serilingampally, Hyderabad - 500019
               </div>
             </div>
           </div>
