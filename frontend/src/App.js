@@ -45,6 +45,7 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/track" element={<OrderTrackingPage />} />
             <Route path="/terms/customer" element={<CustomerTermsPage />} />
+            <Route path="/instore" element={<InStorePage />} />
             
             {/* Customer routes */}
             <Route path="/login" element={<CustomerLoginPage />} />
