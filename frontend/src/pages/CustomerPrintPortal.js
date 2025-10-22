@@ -513,8 +513,17 @@ const CustomerPrintPortal = () => {
                 </div>
 
                 <div className="space-y-2 border-t pt-4">
-                  <div className="flex justify-between">
-                    <span>Printing Cost ({estimate.totalSheets} sheets × ₹{estimate.pricePerPage})</span>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span>Printing Cost ({estimate.totalSheets} sheets × ₹{estimate.pricePerPage})</span>
+                      <div className="text-xs text-gray-500 mt-1">
+                        Paper: {estimate.paperType} {printConfig.colorType === 'color' && `• ${
+                          totalPages < 5 ? 'Below 5 pages rate' : 
+                          totalPages <= 10 ? '5-10 pages rate' : 
+                          '11+ pages rate'
+                        }`}
+                      </div>
+                    </div>
                     <span className="font-medium">₹{estimate.printingCost}</span>
                   </div>
                   {estimate.bindingCost > 0 && (
