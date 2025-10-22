@@ -22,6 +22,8 @@ const CustomerPrintPortal = () => {
   // Files with individual configurations
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [expandedFile, setExpandedFile] = useState(null);
+  const [showLaminationWarning, setShowLaminationWarning] = useState(false);
+  const [currentLaminationFile, setCurrentLaminationFile] = useState(null);
   
   // Delivery
   const [deliveryType, setDeliveryType] = useState('pickup'); // pickup or delivery
