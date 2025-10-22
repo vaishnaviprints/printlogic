@@ -612,10 +612,14 @@ async def update_vendor_profile(
         raise HTTPException(status_code=403, detail="Not a vendor account")
     
     updates = {}
-    if name: updates['name'] = name
-    if description: updates['description'] = description
-    if working_hours: updates['working_hours'] = working_hours
-    if profile_image_url: updates['profile_image_url'] = profile_image_url
+    if name:
+        updates['name'] = name
+    if description:
+        updates['description'] = description
+    if working_hours:
+        updates['working_hours'] = working_hours
+    if profile_image_url:
+        updates['profile_image_url'] = profile_image_url
     
     if updates:
         updates['updated_at'] = datetime.now(timezone.utc).isoformat()
