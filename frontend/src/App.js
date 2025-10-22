@@ -14,10 +14,12 @@ import CustomerLoginPage from '@/pages/CustomerLoginPage';
 import CustomerRegisterPage from '@/pages/CustomerRegisterPage';
 import CustomerPortal from '@/pages/CustomerPortal';
 import MyOrdersPage from '@/pages/MyOrdersPage';
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 
 // Vendor pages
 import VendorLoginPage from '@/pages/VendorLoginPage';
 import VendorDashboard from '@/pages/VendorDashboard';
+import VendorForgotPasswordPage from '@/pages/VendorForgotPasswordPage';
 
 // Admin pages
 import AdminLoginPage from '@/pages/AdminLoginPage';
