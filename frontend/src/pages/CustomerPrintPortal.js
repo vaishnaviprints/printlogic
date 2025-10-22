@@ -639,6 +639,43 @@ const CustomerPrintPortal = () => {
                   </div>
                 )}
 
+                {/* Payment Method Selection */}
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>Payment Method</CardTitle>
+                    <CardDescription>Choose how you want to pay</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+                      <div className="flex items-start space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <RadioGroupItem value="cash" id="cash" className="mt-1" />
+                        <Label htmlFor="cash" className="cursor-pointer flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <DollarSign className="w-5 h-5 text-green-600" />
+                            <span className="font-semibold">Cash Payment at Store</span>
+                            <Badge variant="outline" className="ml-auto bg-green-50 text-green-700 border-green-300">Recommended for In-Store</Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">Place order now, pay when you collect/receive prints</p>
+                          <p className="text-xs text-gray-500 mt-1">✓ No advance payment • ✓ Pay after seeing prints • ✓ Cash/UPI accepted at counter</p>
+                        </Label>
+                      </div>
+
+                      <div className="flex items-start space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <RadioGroupItem value="online" id="online" className="mt-1" />
+                        <Label htmlFor="online" className="cursor-pointer flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileText className="w-5 h-5 text-indigo-600" />
+                            <span className="font-semibold">Online Payment</span>
+                            <Badge variant="outline" className="ml-auto">UPI / Card / NetBanking</Badge>
+                          </div>
+                          <p className="text-sm text-gray-600">Pay now and get priority processing</p>
+                          <p className="text-xs text-gray-500 mt-1">✓ Instant confirmation • ✓ Faster processing • ✓ Secure payment gateway</p>
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </CardContent>
+                </Card>
+
                 <div className="flex justify-between items-center p-4 bg-indigo-50 rounded-lg border-2 border-indigo-200">
                   <span className="text-lg font-semibold">Total Amount</span>
                   <span className="text-3xl font-bold text-indigo-600">
@@ -649,7 +686,7 @@ const CustomerPrintPortal = () => {
                 <div className="flex gap-3">
                   <Button variant="outline" onClick={() => setStep(2)} className="flex-1">Back</Button>
                   <Button onClick={handleSubmitOrder} className="flex-1 bg-indigo-600" disabled={loading}>
-                    {loading ? 'Creating Order...' : 'Confirm Order'}
+                    {loading ? 'Processing...' : paymentMethod === 'cash' ? 'Place Order (Pay Later)' : 'Proceed to Payment'}
                   </Button>
                 </div>
               </CardContent>
