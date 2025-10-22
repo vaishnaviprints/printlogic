@@ -1291,36 +1291,53 @@ async def update_order_status(
 # ==================== ORDER TRACKING ====================
 
 @api_router.post("/orders/track")
-async def track_order_public(order_number: str = Form(...), mobile: str = Form(...)):
-    """Public order tracking with order number and mobile"""
+async def track_order_public(
+    order_number: Optional[str] = Form(None), 
+    mobile: Optional[str] = Form(None),
+    email: Optional[str] = Form(None)
+):
+    """Public order tracking - provide order number OR mobile/email to get ALL matching orders"""
     try:
-        # Find order by order number and customer phone
-        order_doc = await db.orders.find_one({
-            "id": order_number,
-            "customer_phone": mobile
-        }, {"_id": 0})
+        if not order_number and not mobile and not email:
+            raise HTTPException(status_code=400, detail="Please provide order number OR mobile/email")
         
-        if not order_doc:
-            raise HTTPException(status_code=404, detail="Order not found with provided details")
+        # Build query based on what was provided
+        query = {}
+        if order_number:
+            query["id"] = order_number
+        if mobile:
+            query["customer_phone"] = mobile
+        if email:
+            query["customer_email"] = email
         
-        # Convert datetime strings if needed
-        if isinstance(order_doc.get('created_at'), str):
-            order_doc['created_at'] = datetime.fromisoformat(order_doc['created_at'])
-        if isinstance(order_doc.get('updated_at'), str):
-            order_doc['updated_at'] = datetime.fromisoformat(order_doc['updated_at'])
+        # Find ALL orders matching the criteria
+        orders = await db.orders.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
         
-        # Get vendor info if assigned
-        if order_doc.get('vendor_id'):
-            vendor = await db.vendors.find_one({"id": order_doc['vendor_id']}, {"_id": 0})
-            if vendor:
-                order_doc['vendor_name'] = vendor.get('name')
-                order_doc['vendor_location'] = vendor.get('location', {}).get('address')
+        if not orders:
+            raise HTTPException(status_code=404, detail="No orders found with provided details")
         
-        return order_doc
+        # Process each order
+        for order_doc in orders:
+            # Convert datetime strings if needed
+            if isinstance(order_doc.get('created_at'), str):
+                order_doc['created_at'] = datetime.fromisoformat(order_doc['created_at'])
+            if isinstance(order_doc.get('updated_at'), str):
+                order_doc['updated_at'] = datetime.fromisoformat(order_doc['updated_at'])
+            
+            # Get vendor info if assigned
+            if order_doc.get('vendor_id'):
+                vendor = await db.vendors.find_one({"id": order_doc['vendor_id']}, {"_id": 0})
+                if vendor:
+                    order_doc['vendor_name'] = vendor.get('name')
+                    order_doc['vendor_location'] = vendor.get('location', {}).get('address')
         
+        return orders
+        
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Order tracking error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to track order")
+        raise HTTPException(status_code=500, detail="Failed to track orders")
 
 @api_router.get("/orders/my-orders")
 async def get_my_orders(current_user: dict = Depends(get_current_user)):
