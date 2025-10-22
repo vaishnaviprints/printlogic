@@ -42,24 +42,26 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Services */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Resources</h4>
+            <h4 className="text-white font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/instructions/customer" className="hover:text-white transition-colors">Customer Instructions</Link></li>
-              <li><Link to="/instructions/vendor" className="hover:text-white transition-colors">Vendor Instructions</Link></li>
-              <li><Link to="/terms/customer" className="hover:text-white transition-colors">Customer T&C</Link></li>
-              <li><Link to="/terms/vendor" className="hover:text-white transition-colors">Vendor T&C</Link></li>
+              <li><span className="text-gray-400">Document Printing</span></li>
+              <li><span className="text-gray-400">Photo Printing</span></li>
+              <li><span className="text-gray-400">Spiral Binding</span></li>
+              <li><span className="text-gray-400">Lamination</span></li>
+              <li><span className="text-gray-400">Home Delivery</span></li>
             </ul>
           </div>
 
-          {/* Portals */}
+          {/* Legal */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Portals</h4>
+            <h4 className="text-white font-semibold mb-4">Legal & Support</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/admin/login" className="hover:text-white transition-colors">Admin Login</Link></li>
-              <li><Link to="/vendor/login" className="hover:text-white transition-colors">Vendor Login</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors">Customer Login</Link></li>
+              <li><Link to="/terms/customer" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Support</Link></li>
+              <li><Link to="/vendor/login" className="hover:text-white transition-colors">Vendor Portal</Link></li>
             </ul>
           </div>
         </div>
