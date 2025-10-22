@@ -168,15 +168,15 @@ const ContactPage = () => {
               <CardContent className="space-y-3">
                 <div>
                   <p className="font-medium">Vaishnavi Central</p>
-                  <p className="text-sm text-gray-600">Koramangala, Bangalore - 560034</p>
+                  <p className="text-sm text-gray-600">2-49, Taranagar, Serilingampally, Hyderabad - 500019</p>
                 </div>
                 <div>
                   <p className="font-medium">Vaishnavi North</p>
-                  <p className="text-sm text-gray-600">Yelahanka, Bangalore - 560064</p>
+                  <p className="text-sm text-gray-600">Kukatpally, Hyderabad - 500072</p>
                 </div>
                 <div>
                   <p className="font-medium">Vaishnavi South</p>
-                  <p className="text-sm text-gray-600">JP Nagar, Bangalore - 560078</p>
+                  <p className="text-sm text-gray-600">Madhapur, Hyderabad - 500081</p>
                 </div>
               </CardContent>
             </Card>
