@@ -284,11 +284,15 @@ async def update_vendor_profile(
     vendor_id = token["id"]
     
     # Only allow certain fields to be updated by vendor
-    allowed_fields = ["working_hours", "description", "contact_phone"]
+    allowed_fields = ["working_hours", "description", "contact_phone", "bank_details"]
     update_dict = {k: v for k, v in update_data.items() if k in allowed_fields}
     
     if not update_dict:
         raise HTTPException(status_code=400, detail="No valid fields to update")
+    
+    # If bank_details updated, set verified to False
+    if "bank_details" in update_dict:
+        update_dict["bank_details"]["verified"] = False
     
     update_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
     
