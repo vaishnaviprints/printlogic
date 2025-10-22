@@ -44,7 +44,7 @@ const AboutPage = () => {
           <StatCard
             icon={<TrendingUp className="w-8 h-8 text-indigo-600" />}
             title="3 Locations"
-            description="Across Bangalore"
+            description="Across Hyderabad"
           />
         </div>
 
