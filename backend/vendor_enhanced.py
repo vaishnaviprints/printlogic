@@ -37,10 +37,8 @@ async def verify_vendor(authorization: str = Header(...)):
             raise HTTPException(status_code=401, detail="Invalid token")
         
         return {"id": vendor_id, **vendor}
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
 
