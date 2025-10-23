@@ -14,6 +14,8 @@ import CustomerLoginPage from '@/pages/CustomerLoginPage';
 import CustomerRegisterPage from '@/pages/CustomerRegisterPage';
 import CustomerPrintPortal from '@/pages/CustomerPrintPortal';
 import MyOrdersPage from '@/pages/MyOrdersPage';
+import CustomerProfilePage from '@/pages/CustomerProfilePage';
+import CustomerSettingsPage from '@/pages/CustomerSettingsPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 
 // Vendor pages
