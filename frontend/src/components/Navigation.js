@@ -60,12 +60,44 @@ const Navigation = () => {
           {/* Auth Buttons */}
           <div className="flex items-center gap-3">
             {user ? (
-              <>
-                <Button variant="ghost" onClick={() => navigate('/my-orders')} data-testid="nav-my-orders">
-                  <User className="w-4 h-4 mr-2" />
-                  My Orders
-                </Button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <User className="w-4 h-4" />
+                    <span className="hidden md:inline">{user.name || user.email}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/customer/profile')} className="cursor-pointer">
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/my-orders')} className="cursor-pointer">
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    Order History
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/customer/settings')} className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      localStorage.removeItem('auth_token');
+                      localStorage.removeItem('customer_token');
+                      navigate('/login');
+                      window.location.reload();
+                    }} 
+                    className="cursor-pointer text-red-600"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Button variant="ghost" onClick={() => navigate('/login')} data-testid="nav-login">
