@@ -3,7 +3,7 @@ Enhanced Vendor Endpoints for Vaishnavi Printers
 Includes: Store Toggle, Vendor Pricing, Dashboard with Orders
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from typing import List, Optional
 import os
 from datetime import datetime, timezone
@@ -21,9 +21,14 @@ def set_database(database):
 
 SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
 
-async def verify_vendor(token: str):
-    """Verify vendor token"""
+async def verify_vendor(authorization: str = Header(...)):
+    """Verify vendor token from Authorization header"""
     try:
+        # Extract token from "Bearer <token>" format
+        if not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid authorization header")
+        
+        token = authorization.replace("Bearer ", "")
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         vendor_id = payload.get("sub")
         
@@ -31,9 +36,13 @@ async def verify_vendor(token: str):
         if not vendor:
             raise HTTPException(status_code=401, detail="Invalid token")
         
-        return vendor
-    except:
+        return {"id": vendor_id, **vendor}
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
 
 # ============= STORE MANAGEMENT =============
 
