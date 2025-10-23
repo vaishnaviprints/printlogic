@@ -21,12 +21,15 @@ def set_database(database):
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "vaishnavi_printers_secret_key_change_in_production")
 
-async def verify_vendor(authorization: str = Header(...)):
+async def verify_vendor(authorization: str = Header(None, alias="Authorization")):
     """Verify vendor token from Authorization header"""
     try:
+        if not authorization:
+            raise HTTPException(status_code=401, detail="Authorization header missing")
+            
         # Extract token from "Bearer <token>" format
         if not authorization.startswith("Bearer "):
-            raise HTTPException(status_code=401, detail="Invalid authorization header")
+            raise HTTPException(status_code=401, detail="Invalid authorization header format")
         
         token = authorization.replace("Bearer ", "")
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
@@ -34,11 +37,13 @@ async def verify_vendor(authorization: str = Header(...)):
         
         vendor = await db.vendors.find_one({"id": vendor_id})
         if not vendor:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(status_code=401, detail="Vendor not found")
         
         return {"id": vendor_id, **vendor}
     except JWTError as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
 
