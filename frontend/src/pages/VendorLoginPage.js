@@ -24,7 +24,7 @@ const VendorLoginPage = () => {
       formData.append('password', password);
       
       const response = await axios.post(`${API}/auth/vendor/login`, formData);
-      localStorage.setItem('auth_token', response.data.access_token);
+      localStorage.setItem('vendor_token', response.data.access_token);
       localStorage.setItem('vendor_id', response.data.user.id);
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
       toast.success('Login successful!');
