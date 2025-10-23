@@ -1,0 +1,133 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Navigation -->
+  <nav class="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" (click)="navigateTo('/')">
+        <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-gray-900">Vaishnavi Printers</h1>
+        </div>
+      </div>
+      
+      <nav class="hidden md:flex items-center gap-6">
+        <button (click)="navigateTo('/')" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors">Home</button>
+        <button (click)="navigateTo('/about')" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors">About Us</button>
+        <button (click)="navigateTo('/pricing')" class="text-indigo-600 font-semibold">Pricing</button>
+        <button (click)="navigateTo('/contact')" class="text-gray-700 hover:text-indigo-600 font-medium transition-colors">Contact</button>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button (click)="navigateTo('/login')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">Login</button>
+        <button (click)="navigateTo('/register')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">Sign Up</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">Pricing</h1>
+    <p class="text-gray-600 mb-8">Transparent, competitive rates with no hidden charges</p>
+
+    <div *ngIf="loading" class="flex justify-center py-12">
+      <svg class="w-8 h-8 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </div>
+
+    <div *ngIf="!loading && priceRule" class="space-y-8">
+      <!-- Paper Types -->
+      <div class="bg-white rounded-lg shadow-sm p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Paper Types &amp; Rates</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b-2 border-gray-200">
+                <th class="text-left py-3 px-4 font-semibold text-gray-700">Paper Type</th>
+                <th class="text-right py-3 px-4 font-semibold text-gray-700">B&amp;W (per page)</th>
+                <th class="text-right py-3 px-4 font-semibold text-gray-700">Color (per page)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pt of priceRule.paperTypes" class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 font-medium">{{ pt.name }}</td>
+                <td class="text-right py-3 px-4">₹{{ pt.perPage_bw.toFixed(2) }}</td>
+                <td class="text-right py-3 px-4">₹{{ pt.perPage_color.toFixed(2) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Additional Services -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Lamination -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Lamination</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-700">Per Sheet</span>
+              <span class="font-semibold">₹{{ priceRule.lamination.perSheet.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Binding -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Binding Options</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-700">Spiral Binding</span>
+              <span class="font-semibold">₹{{ priceRule.binding.spiral.toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">Hardcover Binding</span>
+              <span class="font-semibold">₹{{ priceRule.binding.hardcover.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Charges -->
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Delivery Charges</h3>
+        <div class="space-y-2">
+          <div class="flex justify-between">
+            <span class="text-gray-700">Base Rate</span>
+            <span class="font-semibold">₹{{ priceRule.deliveryCharge.baseRate.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">Per Kilometer</span>
+            <span class="font-semibold">₹{{ priceRule.deliveryCharge.perKmRate.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-700">Free Delivery Above</span>
+            <span class="font-semibold text-green-600">₹{{ priceRule.deliveryCharge.freeAbove.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <p class="text-sm text-gray-700">
+          <strong>Note:</strong> Prices are effective from {{ priceRule.effectiveFrom | date }}. 
+          All prices are in Indian Rupees (INR) and inclusive of GST. Get instant estimates by uploading your files!
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !priceRule" class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+      <p class="text-yellow-800">No active pricing rule found. Please contact support.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t bg-gray-900 text-white mt-20">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+      <p class="text-gray-400">&copy; 2025 Vaishnavi Printers. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
