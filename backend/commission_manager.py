@@ -3,12 +3,12 @@ Commission/Platform Fee Management
 Handles commission calculations, settings, and notifications
 """
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Header
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timezone
 import os
-import jwt
+from jose import jwt, JWTError
 
 router = APIRouter(prefix="/api/admin", tags=["commission"])
 
@@ -21,14 +21,25 @@ def set_database(database):
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "vaishnavi_printers_secret_key_change_in_production")
 
-def verify_admin(token: str):
-    """Verify admin token"""
+def verify_admin(authorization: str = Header(None, alias="Authorization")):
+    """Verify admin token from Authorization header"""
     try:
+        if not authorization:
+            raise HTTPException(status_code=401, detail="Authorization header missing")
+            
+        if not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Invalid authorization header format")
+        
+        token = authorization.replace("Bearer ", "")
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         admin_id = payload.get("sub")
         return {"id": admin_id}
-    except:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Authentication failed: {str(e)}")
 
 class CommissionSettings(BaseModel):
     """Commission/Platform fee settings"""
