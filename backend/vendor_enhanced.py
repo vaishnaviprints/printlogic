@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from typing import List, Optional
 import os
 from datetime import datetime, timezone
-import jwt
+from jose import jwt, JWTError
 from enhanced_models import VendorPricing
 
 router = APIRouter(prefix="/api/vendor", tags=["vendor_enhanced"])
