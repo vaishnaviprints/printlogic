@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Printer, Home, LogOut, CheckCircle, XCircle, Clock, Bell, Store, TrendingUp, DollarSign } from 'lucide-react';
 import Footer from '@/components/Footer';
+import VendorOrderNotification from '@/components/VendorOrderNotification';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
