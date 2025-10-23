@@ -163,6 +163,20 @@ const VendorDashboard = () => {
     }
   };
 
+  const handleAcceptFromNotification = async (orderId) => {
+    setNewOrderNotification(null);
+    await handleAcceptOrder(orderId);
+  };
+
+  const handleDeclineFromNotification = async (orderId) => {
+    setNewOrderNotification(null);
+    await handleDeclineOrder(orderId);
+  };
+
+  const handleDismissNotification = () => {
+    setNewOrderNotification(null);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('vendor_token');
     navigate('/vendor/login');
