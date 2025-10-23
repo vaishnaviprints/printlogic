@@ -47,21 +47,15 @@ const VendorDashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Check for new orders and play sound
-    if (dashboardData && dashboardData.stats) {
+    // Check for new orders and show notification popup
+    if (dashboardData && dashboardData.stats && dashboardData.pending_orders) {
       const currentPendingCount = dashboardData.stats.pending_count;
-      if (currentPendingCount > previousPendingCount) {
+      if (currentPendingCount > previousPendingCount && dashboardData.pending_orders.length > 0) {
+        // Show notification popup for the newest order
+        const newestOrder = dashboardData.pending_orders[0];
+        setNewOrderNotification(newestOrder);
+        
         playOrderSound();
-        
-        // Browser notification
-        if (Notification.permission === 'granted') {
-          new Notification('🔔 New Order Received!', {
-            body: `You have ${currentPendingCount} pending order(s)`,
-            icon: '/logo.png',
-            tag: 'vendor-order'
-          });
-        }
-        
         toast.success('🔔 New order received!', { duration: 5000 });
       }
       setPreviousPendingCount(currentPendingCount);
