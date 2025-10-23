@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Printer, Upload, MapPin, FileText, Phone, Info, DollarSign, Scale, User } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Printer, Upload, MapPin, FileText, Phone, Info, DollarSign, Scale, User, ChevronDown, ShoppingBag, Settings, UserCircle, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 const Navigation = () => {
