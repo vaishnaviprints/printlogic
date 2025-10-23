@@ -38,6 +38,7 @@ const VendorDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [storeOpen, setStoreOpen] = useState(true);
   const [previousPendingCount, setPreviousPendingCount] = useState(0);
+  const [newOrderNotification, setNewOrderNotification] = useState(null);
 
   useEffect(() => {
     fetchDashboard();
