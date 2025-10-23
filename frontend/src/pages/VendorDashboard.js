@@ -219,6 +219,25 @@ const VendorDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  // Test notification popup
+                  const testOrder = {
+                    id: 'TEST_ORDER_12345',
+                    total_amount: 350,
+                    files: ['document1.pdf', 'document2.pdf'],
+                    delivery_type: 'Home Delivery',
+                    created_at: new Date().toISOString()
+                  };
+                  setNewOrderNotification(testOrder);
+                }} 
+                size="sm"
+                className="border-orange-500 text-orange-700 bg-orange-50"
+              >
+                <Bell className="w-4 h-4 mr-2" />
+                Test Notification
+              </Button>
               <Button variant="outline" onClick={() => navigate('/')} size="sm">
                 <Home className="w-4 h-4 mr-2" />
                 Home
