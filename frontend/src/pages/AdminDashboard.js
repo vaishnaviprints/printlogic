@@ -10,6 +10,7 @@ import OrdersPage from './admin/OrdersPage';
 import PricingPage from './admin/PricingPage';
 import VendorsPage from './admin/VendorsPage';
 import SettingsPage from './admin/SettingsPage';
+import ContentManagerPage from './admin/ContentManagerPage';
 import ReportsPage from './admin/ReportsPage';
 import AuditLogsPage from './admin/AuditLogsPage';
 import ComplaintsPage from './admin/ComplaintsPage';
