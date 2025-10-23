@@ -105,6 +105,10 @@ const AdminDashboard = () => {
                 </svg>
                 Admin Users
               </TabsTrigger>
+              <TabsTrigger value="content" className="gap-2" data-testid="content-tab">
+                <FileText className="w-4 h-4" />
+                Content
+              </TabsTrigger>
               <TabsTrigger value="settings" className="gap-2" data-testid="settings-tab">
                 <Settings className="w-4 h-4" />
                 Settings
