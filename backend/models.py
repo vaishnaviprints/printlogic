@@ -193,10 +193,18 @@ class EstimateResponse(BaseModel):
     estimated_vendor: Optional[Dict[str, Any]] = None
     delivery_quote: Optional[Dict[str, Any]] = None
 
+def generate_order_id():
+    """Generate sequential order ID: VP-YYYY-NNNN"""
+    import datetime
+    year = datetime.datetime.now().year
+    timestamp = int(datetime.datetime.now().timestamp())
+    order_num = timestamp % 10000  # Last 4 digits as order number
+    return f"VP-{year}-{order_num:04d}"
+
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
-    id: str = Field(default_factory=lambda: f"order_{uuid.uuid4().hex[:8]}")
+    id: str = Field(default_factory=generate_order_id)
     customer_email: str
     customer_phone: str
     customer_name: str
