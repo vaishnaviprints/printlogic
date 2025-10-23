@@ -1,0 +1,26 @@
+# Terraform Variables Example
+# Copy this file to terraform.tfvars and fill in your values
+
+# Cloud Provider Selection
+cloud_provider = "aws"  # Options: aws, azure, gcp
+
+# Project Configuration
+project_name = "vaishnavi-printers"
+environment  = "production"
+
+# Region Configuration
+region = "ap-south-1"  # AWS Mumbai
+# region = "centralindia"  # Azure Central India
+# region = "asia-south1"  # GCP Mumbai
+
+# Domain Configuration
+domain_name = "vaishnaviprinters.com"
+
+# Database Configuration (MongoDB Atlas)
+mongodb_connection_string = "mongodb+srv://username:password@cluster.mongodb.net/vaishnavi_printers?retryWrites=true&w=majority"
+
+# Security Configuration
+jwt_secret_key = "CHANGE_THIS_TO_RANDOM_64_CHAR_STRING"
+
+# Generate random secret:
+# openssl rand -hex 32
