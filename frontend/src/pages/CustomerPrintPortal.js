@@ -438,9 +438,15 @@ const CustomerPrintPortal = () => {
       uploadedFiles.forEach((fileObj, index) => {
         formData.append(`files`, fileObj.file);
         formData.append(`file_configs`, JSON.stringify({
-          index,
-          fileName: fileObj.name,
-          ...fileObj.config
+          file_name: fileObj.name,  // Required field
+          page_ranges: fileObj.config.pageRanges || "all",  // Required field
+          selected_pages: fileObj.config.totalPages || 1,  // Required field
+          paper_size: fileObj.config.paperSize || "A4",
+          color_type: fileObj.config.colorType || "black_white",
+          sides: fileObj.config.sides || "single",
+          copies: fileObj.config.copies || 1,
+          binding: fileObj.config.binding || "none",
+          lamination: fileObj.config.lamination || "none"
         }));
       });
       
