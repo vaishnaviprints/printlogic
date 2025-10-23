@@ -720,7 +720,7 @@ const VendorsPage = () => {
           </DialogHeader>
           {selectedVendor && (
             <Tabs value={viewTab} onValueChange={setViewTab}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-1">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="banking">Banking</TabsTrigger>
                 <TabsTrigger value="sales">Sales History</TabsTrigger>
