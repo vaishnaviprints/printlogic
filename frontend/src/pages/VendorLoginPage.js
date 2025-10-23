@@ -97,6 +97,16 @@ const VendorLoginPage = () => {
             </p>
           </div>
         </div>
+
+        <div className="text-center mt-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/')}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            ← Back to Home
+          </Button>
+        </div>
       </div>
     </div>
   );
