@@ -1,0 +1,97 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <base href="./">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
+  <meta name="author" content="Łukasz Holeczek">
+  <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
+  <title>Expired Download Link</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Roboto, sans-serif;
+    }
+
+    .container {
+      max-width: 1024px;
+      margin: auto;
+    }
+
+    .container .wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+
+    .wrap p {
+      font-size: 20px;
+    }
+
+    .align-center {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .wrap span {
+      font-size: 20px;
+    }
+
+    .wrap h1 {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .wrap a {
+      text-decoration: none;
+      color: darkgreen;
+      font-size: 22px;
+      font-weight: 600;
+      transition: .4s;
+    }
+
+    .wrap a:hover {
+      color: green;
+    }
+
+  </style>
+</head>
+
+
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+  <div class="container">
+    <div class="wrap">
+      <h1>
+        The link you followed has expired.
+      </h1>
+      <span>
+        Find more pdfs you might interest
+      </span>
+      <span class="align-center">
+        Back to &nbsp;<a href="https://pdfdrive.to">
+          <img src="https://pdfdrive.to/logo.png" alt="pdfdrive.to"
+            title="pdfdrive.to">&nbsp;</a>
+      </span>
+      <p>
+        or go to this book &nbsp;<a href="https://pdfdrive.to/dl/nesters-microbiology-a-human-perspective-0">Nester&#x27;s Microbiology: A Human Perspective&nbsp;</a> to download again.
+      </p>
+    </div>
+  </div>
+  <!-- CoreUI and necessary plugins-->
+</body>
+
+
+</html>
