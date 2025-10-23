@@ -19,7 +19,7 @@ def set_database(database):
     global db
     db = database
 
-SECRET_KEY = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "vaishnavi_printers_secret_key_change_in_production")
 
 async def verify_vendor(authorization: str = Header(...)):
     """Verify vendor token from Authorization header"""
