@@ -129,6 +129,7 @@ const AdminDashboard = () => {
           <Route path="audits" element={<AuditLogsPage />} />
           <Route path="complaints" element={<ComplaintsPage />} />
           <Route path="admins" element={<AssistantAdminPage />} />
+          <Route path="content" element={<ContentManagerPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<OrdersPage />} />
         </Routes>
