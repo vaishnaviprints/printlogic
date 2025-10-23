@@ -195,6 +195,16 @@ const VendorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Order Notification Popup */}
+      {newOrderNotification && (
+        <VendorOrderNotification
+          order={newOrderNotification}
+          onAccept={handleAcceptFromNotification}
+          onDecline={handleDeclineFromNotification}
+          onDismiss={handleDismissNotification}
+        />
+      )}
+
       {/* Header */}
       <header className="border-b bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
